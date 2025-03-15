@@ -4,8 +4,7 @@ import com.strime.hikereal.data.local.entity.HikeEntity
 import com.strime.hikereal.domain.model.HikePost
 import java.util.concurrent.TimeUnit
 
-fun HikeEntity.toHikePost(
-): HikePost {
+fun HikeEntity.toHikePost(): HikePost {
     val hours = TimeUnit.MILLISECONDS.toHours(duration)
     val minutes = TimeUnit.MILLISECONDS.toMinutes(duration) % 60
     val formattedDuration = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
