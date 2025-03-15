@@ -1,0 +1,71 @@
+<!--
+  ~ Copyright (C) 2022 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <!-- Application -->
+    <string name="app_name">HikeReal</string>
+    <string name="loading">LOADING</string>
+    <string name="no_data">No data</string>
+    <string name="no_data_description" />
+
+    <!-- Navigation -->
+    <string name="menu_back">Back</string>
+    <string name="feed">Aventures</string>
+    <string name="live">Directs</string>
+    <string name="profile">Carnet</string>
+
+    <!-- Feed Screen -->
+    <string name="feed_error_loading">Erreur lors du chargement du flux</string>
+    <string name="feed_trek_solo">Solo</string>
+    <string name="feed_trek_group_size">%d pers.</string>
+    <string name="feed_metric_elevation">Dénivelé</string>
+    <string name="feed_metric_elevation_value">%dm</string>
+    <string name="feed_metric_distance">Distance</string>
+    <string name="feed_metric_distance_value">%.1fkm</string>
+    <string name="feed_metric_duration">Durée</string>
+
+    <!-- Contacts (existants) -->
+    <string name="contact_details">Contact Details</string>
+    <string name="loading_contacts_error">Error while loading contacts</string>
+    <string name="loading_contact_error">Error while loading contact</string>
+    <string name="contact_not_found">Contact not found</string>
+    <string name="label_all">All Contacts</string>
+    <string name="no_contacts_all">You have no contacts</string>
+    <string name="network_failed">Fetching contact failed</string>
+    <string name="contact_phone">Landline</string>
+    <string name="contact_cell">Mobile</string>
+    <string name="contact_mail">Email</string>
+    <string name="contact_address">Address</string>
+
+    <!-- Buttons -->
+    <string name="retry">Retry</string>
+
+    <!-- Content Descriptions -->
+    <string name="contact_image_content_description">Contact image</string>
+    <string name="contacts_header_image_content_description">Contacts header image</string>
+    <string name="no_contacts_image_content_description">No contacts image</string>
+    <string name="phone_image_content_description">Phone image</string>
+    <string name="mail_image_content_description">Mail image</string>
+    <string name="address_image_content_description">Address image</string>
+    <string name="empty_image_content_description">Empty image</string>
+    <string name="error_image_content_description">Error image</string>
+
+
+    <!-- WIP -->
+    <string name="coming_soon">Coming Soon</string>
+    <string name="live_construction_message">Live streams will be available soon. Get ready to share your hikes in real-time!</string>
+    <string name="profile_construction_message">Your hiking journal is under construction. You\'ll soon be able to record all your adventures here.</string>
+</resources>
