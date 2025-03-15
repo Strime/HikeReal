@@ -56,9 +56,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -153,11 +152,10 @@ fun TrekPostCard(post: TrekPost, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
-        elevation = CardDefaults.cardElevation(Dimens.cardElevation),
-        shape = RoundedCornerShape(Dimens.borderRadiusMedium),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = Dimens.surfaceOpacity)
-        )
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier

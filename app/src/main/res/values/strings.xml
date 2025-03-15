@@ -23,9 +23,9 @@
 
     <!-- Navigation -->
     <string name="menu_back">Back</string>
-    <string name="feed">Aventures</string>
-    <string name="live">Directs</string>
-    <string name="profile">Carnet</string>
+    <string name="feed">Adventure</string>
+    <string name="live">Direct</string>
+    <string name="profile">Notebook</string>
 
     <!-- Feed Screen -->
     <string name="feed_error_loading">Erreur lors du chargement du flux</string>
@@ -37,18 +37,29 @@
     <string name="feed_metric_distance_value">%.1fkm</string>
     <string name="feed_metric_duration">Durée</string>
 
-    <!-- Contacts (existants) -->
-    <string name="contact_details">Contact Details</string>
-    <string name="loading_contacts_error">Error while loading contacts</string>
-    <string name="loading_contact_error">Error while loading contact</string>
-    <string name="contact_not_found">Contact not found</string>
-    <string name="label_all">All Contacts</string>
-    <string name="no_contacts_all">You have no contacts</string>
-    <string name="network_failed">Fetching contact failed</string>
-    <string name="contact_phone">Landline</string>
-    <string name="contact_cell">Mobile</string>
-    <string name="contact_mail">Email</string>
-    <string name="contact_address">Address</string>
+    <!-- Profile Screen -->
+    <string name="profile_view_all_badges">View All</string>
+    <string name="profile_badges_section_title">Badges</string>
+    <string name="profile_empty_badges_message">Complete challenges to earn badges</string>
+    <string name="profile_recent_hikes">Recent Hikes</string>
+    <string name="profile_hikes_stat_label">Hikes</string>
+    <string name="profile_km_stat_label">km</string>
+    <string name="profile_elevation_stat_label">m elev.</string>
+    <string name="profile_badge_content_description">Achievement badge</string>
+    <string name="profile_weather_icon_description">Weather conditions</string>
+    <string name="profile_elevation_icon_description">Elevation gain</string>
+    <string name="profile_distance_icon_description">Distance traveled</string>
+    <string name="profile_this_year">This Year</string>
+    <string name="profile_total_hikes">Total Hikes</string>
+    <string name="profile_total_distance">Total Distance</string>
+    <string name="profile_total_elevation">Total Elevation</string>
+    <string name="profile_current_streak">Current Streak</string>
+    <string name="profile_hikes">hikes</string>
+    <string name="profile_km">km</string>
+    <string name="profile_m">m</string>
+    <string name="profile_days">days</string>
+    <string name="profile_level">Level</string>
+    <string name="profile_xp">XP</string>
 
     <!-- Buttons -->
     <string name="retry">Retry</string>
