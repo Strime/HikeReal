@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.strime.hikereal.R
-import com.strime.hikereal.navigation.AppRoutes
 import com.strime.hikereal.ui.components.DebouncedButtons
 import com.strime.hikereal.ui.theme.Dimens.paddingLarge
 import com.strime.hikereal.ui.theme.Dimens.spacingLarge

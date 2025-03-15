@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface ActiveHikeRepository {
     fun getCurrentActiveHike(): Flow<ActiveHikeEntity?>
     suspend fun startNewHike(userId: String): String
-    suspend fun pauseHike(hikeId: String): Boolean
-    suspend fun resumeHike(hikeId: String): Boolean
     suspend fun completeHike(hikeId: String): Boolean
     suspend fun cancelHike(hikeId: String): Boolean
     suspend fun updateDistance(hikeId: String, distance: Float): Boolean

@@ -34,12 +34,6 @@ interface ActiveHikeDao {
     @Query("UPDATE active_hikes SET currentDuration = :duration, updatedAt = :updatedAt WHERE id = :hikeId")
     suspend fun updateHikeDuration(hikeId: String, duration: Long, updatedAt: Long)
 
-    @Query("UPDATE active_hikes SET pauseTime = :pauseTime, status = 'PAUSED', updatedAt = :updatedAt WHERE id = :hikeId")
-    suspend fun pauseHike(hikeId: String, pauseTime: Long, updatedAt: Long)
-
-    @Query("UPDATE active_hikes SET pauseTime = NULL, status = 'ACTIVE', updatedAt = :updatedAt WHERE id = :hikeId")
-    suspend fun resumeHike(hikeId: String, updatedAt: Long)
-
     @Query("UPDATE active_hikes SET frontCameraUri = :uri, updatedAt = :updatedAt WHERE id = :hikeId")
     suspend fun updateFrontCameraUri(hikeId: String, uri: String, updatedAt: Long)
 

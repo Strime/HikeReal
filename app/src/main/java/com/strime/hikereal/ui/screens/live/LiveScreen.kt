@@ -15,6 +15,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +35,8 @@ fun LiveScreen(
     navController: NavController,
     viewModel: LiveViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -68,11 +72,12 @@ fun LiveScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-
-        DebouncedButtons.DebouncedPulseButton(
-            onClick = { navController.navigate(AppRoutes.START_LIVE) },
-            text = stringResource(R.string.live_start_live_now),
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = paddingLarge * 3)
-        )
+        if (!uiState.hasActiveHike) {
+            DebouncedButtons.DebouncedPulseButton(
+                onClick = { navController.navigate(AppRoutes.START_LIVE) },
+                text = stringResource(R.string.live_start_live_now),
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = paddingLarge * 3)
+            )
+        }
     }
 }

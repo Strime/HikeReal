@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class ActiveHikeEntity(
     @PrimaryKey val id: String,
     val startTime: Long = System.currentTimeMillis(),
-    val pauseTime: Long? = null,
     val endTime: Long? = null,
     val status: String = "ACTIVE",
 

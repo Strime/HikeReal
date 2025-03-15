@@ -85,6 +85,14 @@
     <string name="profile_xp">XP</string>
 
 
+    <!-- Active hike banner -->
+    <string name="active_hike_in_progress">Running</string>
+    <string name="active_hike_paused">Paused</string>
+    <string name="active_hike">Running</string>
+    <string name="pause_hike">Pause</string>
+    <string name="resume_hike">Resume</string>
+    <string name="complete_hike">Complete</string>
+
     <!-- Buttons -->
     <string name="retry">Retry</string>
     <string name="back">Back</string>

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e7f899aa5ff0f62f39bff2abd36d25b4",
+    "identityHash": "34a28b2eedf5b94fd74575cf3232dc10",
     "entities": [
       {
         "tableName": "hikes",
@@ -130,7 +130,7 @@
       },
       {
         "tableName": "active_hikes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `pauseTime` INTEGER, `endTime` INTEGER, `status` TEXT NOT NULL, `frontCameraUri` TEXT, `backCameraUri` TEXT, `currentDistance` REAL NOT NULL, `currentElevation` INTEGER NOT NULL, `currentDuration` INTEGER NOT NULL, `maxSpeed` REAL NOT NULL, `averageSpeed` REAL NOT NULL, `totalAscent` INTEGER NOT NULL, `totalDescent` INTEGER NOT NULL, `caloriesBurned` INTEGER NOT NULL, `startLocationName` TEXT, `currentLocationName` TEXT, `lastLocationTimestamp` INTEGER, `trackedLocationsCount` INTEGER NOT NULL, `weatherCondition` TEXT, `temperature` REAL, `userId` TEXT NOT NULL, `batteryStartLevel` INTEGER, `batteryCurrentLevel` INTEGER, `liveShareCode` TEXT, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER, `status` TEXT NOT NULL, `frontCameraUri` TEXT, `backCameraUri` TEXT, `currentDistance` REAL NOT NULL, `currentElevation` INTEGER NOT NULL, `currentDuration` INTEGER NOT NULL, `maxSpeed` REAL NOT NULL, `averageSpeed` REAL NOT NULL, `totalAscent` INTEGER NOT NULL, `totalDescent` INTEGER NOT NULL, `caloriesBurned` INTEGER NOT NULL, `startLocationName` TEXT, `currentLocationName` TEXT, `lastLocationTimestamp` INTEGER, `trackedLocationsCount` INTEGER NOT NULL, `weatherCondition` TEXT, `temperature` REAL, `userId` TEXT NOT NULL, `batteryStartLevel` INTEGER, `batteryCurrentLevel` INTEGER, `liveShareCode` TEXT, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -143,12 +143,6 @@
             "columnName": "startTime",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "pauseTime",
-            "columnName": "pauseTime",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "endTime",
@@ -308,7 +302,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e7f899aa5ff0f62f39bff2abd36d25b4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '34a28b2eedf5b94fd74575cf3232dc10')"
     ]
   }
 }

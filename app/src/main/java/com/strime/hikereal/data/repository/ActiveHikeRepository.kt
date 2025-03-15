@@ -42,30 +42,6 @@ class ActiveHikeRepositoryImpl @Inject constructor(
         return hikeId
     }
 
-    override suspend fun pauseHike(hikeId: String): Boolean {
-        val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
-
-        if (hike.status != "ACTIVE") {
-            return false
-        }
-
-        val now = System.currentTimeMillis()
-        activeHikeDao.pauseHike(hikeId, now, now)
-        return true
-    }
-
-    override suspend fun resumeHike(hikeId: String): Boolean {
-        val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
-
-        if (hike.status != "PAUSED") {
-            return false
-        }
-
-        val now = System.currentTimeMillis()
-        activeHikeDao.resumeHike(hikeId, now)
-        return true
-    }
-
     override suspend fun completeHike(hikeId: String): Boolean {
         val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
 

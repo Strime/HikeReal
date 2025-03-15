@@ -5,6 +5,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -17,12 +18,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -31,21 +34,23 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.strime.hikereal.R
 import com.strime.hikereal.navigation.AppRoutes
+import com.strime.hikereal.ui.components.ActiveHikeBanner
 import com.strime.hikereal.ui.screens.feed.FeedScreen
 import com.strime.hikereal.ui.screens.live.LiveScreen
 import com.strime.hikereal.ui.screens.profile.ProfileScreen
 import com.strime.hikereal.ui.screens.snap.SnapScreen
 import com.strime.hikereal.ui.screens.start_live.StartLiveScreen
+import com.strime.hikereal.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun HikeRealApp() {
+fun HikeRealApp(
+    sharedViewModel: SharedViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
-
-    // État pour gérer la visibilité de la barre de navigation
+    val activeHikeState by sharedViewModel.activeHikeState.collectAsState()
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
 
-    // Mettre à jour la visibilité de la barre de navigation en fonction de la destination
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -68,24 +73,35 @@ fun HikeRealApp() {
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar {
-                    val currentDestination = navBackStackEntry?.destination
-
-                    items.forEach { screen ->
-                        NavigationBarItem(
-                            icon = { Icon(screen.icon, contentDescription = null) },
-                            label = { Text(stringResource(screen.resourceId)) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                            onClick = {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
+                Column {
+                    if (activeHikeState.hikeId != null) {
+                        ActiveHikeBanner(
+                            hikeState = activeHikeState.hikeState,
+                            duration = activeHikeState.formattedDuration,
+                            distance = activeHikeState.formattedDistance,
+                            onCompleteClick = { sharedViewModel.completeHike() }
                         )
+                    }
+
+                    NavigationBar {
+                        val currentDestination = navBackStackEntry?.destination
+
+                        items.forEach { screen ->
+                            NavigationBarItem(
+                                icon = { Icon(screen.icon, contentDescription = null) },
+                                label = { Text(stringResource(screen.resourceId)) },
+                                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                onClick = {
+                                    navController.navigate(screen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
