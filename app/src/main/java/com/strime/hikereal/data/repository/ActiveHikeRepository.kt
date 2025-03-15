@@ -56,32 +56,24 @@ class ActiveHikeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun cancelHike(hikeId: String): Boolean {
-        val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
-
         val now = System.currentTimeMillis()
         activeHikeDao.updateHikeStatus(hikeId, "CANCELLED", now, now)
         return true
     }
 
     override suspend fun updateDistance(hikeId: String, distance: Float): Boolean {
-        val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
-
         val now = System.currentTimeMillis()
         activeHikeDao.updateHikeDistance(hikeId, distance, now)
         return true
     }
 
     override suspend fun saveFrontCameraPhoto(hikeId: String, uri: String): Boolean {
-        val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
-
         val now = System.currentTimeMillis()
         activeHikeDao.updateFrontCameraUri(hikeId, uri, now)
         return true
     }
 
     override suspend fun saveBackCameraPhoto(hikeId: String, uri: String): Boolean {
-        val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
-
         val now = System.currentTimeMillis()
         activeHikeDao.updateBackCameraUri(hikeId, uri, now)
         return true

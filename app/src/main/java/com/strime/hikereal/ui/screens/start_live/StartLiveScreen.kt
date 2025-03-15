@@ -66,13 +66,16 @@ fun StartLiveScreen(
             is UiState.Success -> {
                 navController.popBackStack()
             }
+
             is UiState.Error -> {
                 val errorMsg = (startHikeState as UiState.Error).message
                 snackbarHostState.showSnackbar(
                     message = errorMsg.ifEmpty { "Une erreur est survenue" }
                 )
             }
-            else -> { /* Ne rien faire pour les autres états */ }
+
+            else -> { /* Ne rien faire pour les autres états */
+            }
         }
     }
 
@@ -164,7 +167,9 @@ fun StartLiveScreen(
                                 supportingContent = {
                                     Text(
                                         text = stringResource(R.string.start_hiking_stats_description),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                            alpha = 0.7f
+                                        )
                                     )
                                 },
                                 leadingContent = {
@@ -186,7 +191,9 @@ fun StartLiveScreen(
                                 supportingContent = {
                                     Text(
                                         text = stringResource(R.string.start_hiking_hikereal_description),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                            alpha = 0.7f
+                                        )
                                     )
                                 },
                                 leadingContent = {
@@ -208,7 +215,9 @@ fun StartLiveScreen(
                                 supportingContent = {
                                     Text(
                                         text = stringResource(R.string.start_hiking_share_description),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                            alpha = 0.7f
+                                        )
                                     )
                                 },
                                 leadingContent = {
@@ -223,7 +232,6 @@ fun StartLiveScreen(
                     }
                 }
 
-                // Bouton de démarrage qui appelle viewModel.startNewHike()
                 DebouncedButtons.DebouncedFullWidthButton(
                     text = stringResource(R.string.start_hiking_start_activity),
                     onClick = { viewModel.startNewHike() },
@@ -236,7 +244,6 @@ fun StartLiveScreen(
                 Spacer(modifier = Modifier.height(spacingMedium))
             }
 
-            // Afficher un indicateur de chargement lorsque la randonnée est en cours de démarrage
             if (startHikeState is UiState.Loading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -246,7 +253,6 @@ fun StartLiveScreen(
                 }
             }
 
-            // Affichage des messages d'erreur
             SnackbarHost(
                 hostState = snackbarHostState,
                 modifier = Modifier.align(Alignment.BottomCenter),

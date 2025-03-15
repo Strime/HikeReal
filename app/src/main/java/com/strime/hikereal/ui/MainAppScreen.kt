@@ -44,7 +44,7 @@ import com.strime.hikereal.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun HikeRealApp(
+fun MainAppScreen(
     sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
