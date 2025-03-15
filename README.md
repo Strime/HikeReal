@@ -72,6 +72,12 @@ The app uses test factory classes to generate test data:
 * **HikeEntityFactory:** Creates database entities for testing
 * **HikePostFactory:** Generates domain models for UI testing
 
+## Business Model
+
+The business model and monetization strategy for HikeReal is available in the following documents:
+- [HikeReal Business Model - EN.pdf](/business-model/HikeReal%20Business%20Model%20-%20EN.pdf) - English version
+- [HikeReal Business Model - FR.pdf](/business-model/HikeReal%20Business%20Model%20-%20FR.pdf) - French version
+
 ## Screenshots
 
 Located in the `screenshots` directory.
