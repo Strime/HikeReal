@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.strime.hikereal.R
+import com.strime.hikereal.navigation.AppRoutes
 import com.strime.hikereal.ui.components.DebouncedButtons
 import com.strime.hikereal.ui.theme.Dimens.iconSizeMedium
 import com.strime.hikereal.ui.theme.Dimens.paddingLarge
@@ -69,7 +70,7 @@ fun LiveScreen(
         }
 
         DebouncedButtons.DebouncedPulseButton(
-            onClick = { navController.navigate("start_live") },
+            onClick = { navController.navigate(AppRoutes.START_LIVE) },
             text = stringResource(R.string.live_start_live_now),
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = paddingLarge * 3)
         )

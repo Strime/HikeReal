@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.strime.hikereal.R
+import com.strime.hikereal.navigation.AppRoutes
 import com.strime.hikereal.ui.screens.feed.FeedScreen
 import com.strime.hikereal.ui.screens.live.LiveScreen
 import com.strime.hikereal.ui.screens.profile.ProfileScreen
@@ -49,7 +50,7 @@ fun HikeRealApp() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(currentRoute) {
-        if (currentRoute == "start_live") {
+        if (currentRoute == AppRoutes.START_LIVE) {
             delay(150)
             showBottomBar = false
         } else {
@@ -92,20 +93,20 @@ fun HikeRealApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Feed.route,
+            startDestination = AppRoutes.FEED,
             modifier = Modifier.padding(
                 if (showBottomBar) innerPadding else androidx.compose.foundation.layout.PaddingValues()
             )
         ) {
-            composable(Screen.Feed.route) {
+            composable(AppRoutes.FEED) {
                 FeedScreen(navController)
             }
 
-            composable(Screen.Live.route) {
+            composable(AppRoutes.LIVE) {
                 LiveScreen(navController)
             }
 
-            composable(Screen.Profile.route) {
+            composable(AppRoutes.PROFILE) {
                 ProfileScreen(navController)
             }
 
@@ -116,7 +117,7 @@ fun HikeRealApp() {
 
             // Nouvelle destination avec animation
             composable(
-                route = "start_live",
+                route = AppRoutes.START_LIVE,
                 enterTransition = {
                     // Animation d'entrée qui part du centre et s'étend
                     slideIntoContainer(
@@ -148,7 +149,7 @@ fun HikeRealApp() {
 }
 
 sealed class Screen(val route: String, val resourceId: Int, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    data object Feed : Screen("feed", R.string.feed, Icons.Filled.Hiking)
-    data object Live : Screen("live", R.string.live, Icons.Filled.Stream)
-    data object Profile : Screen("profile", R.string.profile, Icons.Filled.AccountCircle)
+    data object Feed : Screen(AppRoutes.FEED, R.string.feed, Icons.Filled.Hiking)
+    data object Live : Screen(AppRoutes.LIVE, R.string.live, Icons.Filled.Stream)
+    data object Profile : Screen(AppRoutes.PROFILE, R.string.profile, Icons.Filled.AccountCircle)
 }
