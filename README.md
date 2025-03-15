@@ -55,10 +55,22 @@ The app follows a Model-View-ViewModel (MVVM) architecture:
 
 ## Testing
 
+The app includes a comprehensive testing suite to ensure reliability and functionality:
+
 * **Unit Tests:** Located in the `src/test/java` directory.
 * **Instrumented Tests:** Located in the `src/androidTest/java` directory.
 
 Run tests from Android Studio or using the command line.
+
+### Unit Tests
+Located in the `src/test/java` directory, these tests verify individual components in isolation:
+* **ViewModel Tests:** Verify state management and business logic
+* **Repository Tests:** Ensure data operations work correctly
+* 
+### Test Factories
+The app uses test factory classes to generate test data:
+* **HikeEntityFactory:** Creates database entities for testing
+* **HikePostFactory:** Generates domain models for UI testing
 
 ## Screenshots
 
