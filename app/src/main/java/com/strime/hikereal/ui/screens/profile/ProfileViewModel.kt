@@ -24,7 +24,6 @@ class ProfileViewModel @Inject constructor(
     private val badgeRepository: BadgeRepository
 ) : ViewModel() {
 
-
     val userId = "current_user"
 
     // In a real app, this would come from a user repository or auth service
@@ -34,7 +33,6 @@ class ProfileViewModel @Inject constructor(
         level = 4,
         experiencePoints = 650,
         bio = "Blabla"
-
     )
 
     private val _uiState = MutableStateFlow(ProfileUiState())

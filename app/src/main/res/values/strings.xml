@@ -55,8 +55,8 @@
     <string name="start_hiking_features">Features</string>
     <string name="start_hiking_stats_tracking">Hiking Stats</string>
     <string name="start_hiking_stats_description">Distance, duration, elevation and location will be automatically recorded</string>
-    <string name="start_hiking_hikereel_photo">Exclusive HikeReel</string>
-    <string name="start_hiking_hikereel_description">Take a unique front/back photo that will be the main image of your activity</string>
+    <string name="start_hiking_hikereal_photo">Exclusive HikeReel</string>
+    <string name="start_hiking_hikereal_description">Take a unique front/back photo that will be the main image of your activity</string>
     <string name="start_hiking_share_title">Share with Friends</string>
     <string name="start_hiking_share_description">At the end, add more photos and share your experience with friends</string>
 

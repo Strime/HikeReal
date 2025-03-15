@@ -80,15 +80,19 @@ fun FeedScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         when (val state = uiState) {
-            is UiState.Loading -> {
+            UiState.Initial,
+            UiState.Loading -> {
                 LoadingState()
             }
+
             is UiState.Success -> {
                 SuccessState(posts = state.data, navController = navController)
             }
+
             is UiState.Error -> {
                 ErrorState(message = state.message)
             }
+
         }
     }
 }
@@ -312,7 +316,10 @@ fun DualViewPhotoDisplay(dualViewImage: TrekPost.DualViewImage) {
     val initialOffset = Offset(Dimens.paddingMedium.value, Dimens.paddingMedium.value)
     var currentPosition by remember { mutableStateOf(initialOffset) }
 
-    val animatedPosition by animateOffsetAsState(targetValue = currentPosition, label = "dual_photo")
+    val animatedPosition by animateOffsetAsState(
+        targetValue = currentPosition,
+        label = "dual_photo"
+    )
 
     var isBackImageAsBackground by remember { mutableStateOf(true) }
 
@@ -333,7 +340,12 @@ fun DualViewPhotoDisplay(dualViewImage: TrekPost.DualViewImage) {
 
         Box(
             modifier = Modifier
-                .offset { IntOffset(animatedPosition.x.roundToInt(), animatedPosition.y.roundToInt()) }
+                .offset {
+                    IntOffset(
+                        animatedPosition.x.roundToInt(),
+                        animatedPosition.y.roundToInt()
+                    )
+                }
                 .size(Dimens.pipImageSize)
                 .clip(RoundedCornerShape(Dimens.borderRadiusMedium))
                 .border(
@@ -344,8 +356,10 @@ fun DualViewPhotoDisplay(dualViewImage: TrekPost.DualViewImage) {
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragEnd = {
-                            val constrainedX = currentPosition.x.coerceIn(0f, imageContainerWidth - pipSize)
-                            val constrainedY = currentPosition.y.coerceIn(0f, imageContainerHeight - pipSize)
+                            val constrainedX =
+                                currentPosition.x.coerceIn(0f, imageContainerWidth - pipSize)
+                            val constrainedY =
+                                currentPosition.y.coerceIn(0f, imageContainerHeight - pipSize)
 
                             if (constrainedX != currentPosition.x || constrainedY != currentPosition.y) {
                                 currentPosition = Offset(constrainedX, constrainedY)
@@ -353,15 +367,22 @@ fun DualViewPhotoDisplay(dualViewImage: TrekPost.DualViewImage) {
                         }
                     ) { change, dragAmount ->
                         change.consume()
-                        val newX = (currentPosition.x + dragAmount.x).coerceIn(0f, imageContainerWidth - pipSize)
-                        val newY = (currentPosition.y + dragAmount.y).coerceIn(0f, imageContainerHeight - pipSize)
+                        val newX = (currentPosition.x + dragAmount.x).coerceIn(
+                            0f,
+                            imageContainerWidth - pipSize
+                        )
+                        val newY = (currentPosition.y + dragAmount.y).coerceIn(
+                            0f,
+                            imageContainerHeight - pipSize
+                        )
                         currentPosition = Offset(newX, newY)
                     }
                 }
                 .clickable {
                     isBackImageAsBackground = !isBackImageAsBackground
                     val constrainedX = currentPosition.x.coerceIn(0f, imageContainerWidth - pipSize)
-                    val constrainedY = currentPosition.y.coerceIn(0f, imageContainerHeight - pipSize)
+                    val constrainedY =
+                        currentPosition.y.coerceIn(0f, imageContainerHeight - pipSize)
                     currentPosition = Offset(constrainedX, constrainedY)
                 }
         ) {
@@ -461,25 +482,25 @@ fun MetricsRow(
         MetricItem(
             icon = Icons.Default.ArrowUpward,
             value = stringResource(R.string.feed_metric_elevation_value, metrics.elevation),
-            label = stringResource(R.string.feed_metric_elevation)
         )
 
         MetricItem(
             icon = Icons.AutoMirrored.Default.DirectionsWalk,
             value = stringResource(R.string.feed_metric_distance_value, metrics.distance),
-            label = stringResource(R.string.feed_metric_distance)
         )
 
         MetricItem(
             icon = Icons.Default.Timer,
             value = metrics.duration,
-            label = stringResource(R.string.feed_metric_duration)
         )
     }
 }
 
 @Composable
-fun MetricItem(icon: androidx.compose.ui.graphics.vector.ImageVector, value: String, label: String) {
+fun MetricItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    value: String,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(Dimens.spacingTiny)

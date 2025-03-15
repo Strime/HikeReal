@@ -18,13 +18,16 @@ package com.strime.hikereal.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.strime.hikereal.data.local.dao.ActiveHikeDao
 import com.strime.hikereal.data.local.dao.BadgeDao
 import com.strime.hikereal.data.local.dao.HikeDao
+import com.strime.hikereal.data.local.entity.ActiveHikeEntity
 import com.strime.hikereal.data.local.entity.BadgeEntity
 import com.strime.hikereal.data.local.entity.HikeEntity
 
-@Database(entities = [HikeEntity::class, BadgeEntity::class], version = 1)
+@Database(entities = [HikeEntity::class, BadgeEntity::class, ActiveHikeEntity::class], version = 1)
 abstract class HikeRealDatabase : RoomDatabase() {
     abstract fun hikeDao(): HikeDao
     abstract fun badgeDao(): BadgeDao
+    abstract fun activeHikeDao(): ActiveHikeDao
 }

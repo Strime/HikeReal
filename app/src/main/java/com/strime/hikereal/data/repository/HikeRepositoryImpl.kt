@@ -6,7 +6,6 @@ import com.strime.hikereal.domain.model.Hike
 import com.strime.hikereal.domain.model.UserStats
 import com.strime.hikereal.domain.repository.HikeRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.time.LocalDate

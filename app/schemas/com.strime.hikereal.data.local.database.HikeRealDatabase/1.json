@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "794ecd18ebaa7483672314354d2c23f9",
+    "identityHash": "e7f899aa5ff0f62f39bff2abd36d25b4",
     "entities": [
       {
         "tableName": "hikes",
@@ -127,12 +127,188 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "active_hikes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `pauseTime` INTEGER, `endTime` INTEGER, `status` TEXT NOT NULL, `frontCameraUri` TEXT, `backCameraUri` TEXT, `currentDistance` REAL NOT NULL, `currentElevation` INTEGER NOT NULL, `currentDuration` INTEGER NOT NULL, `maxSpeed` REAL NOT NULL, `averageSpeed` REAL NOT NULL, `totalAscent` INTEGER NOT NULL, `totalDescent` INTEGER NOT NULL, `caloriesBurned` INTEGER NOT NULL, `startLocationName` TEXT, `currentLocationName` TEXT, `lastLocationTimestamp` INTEGER, `trackedLocationsCount` INTEGER NOT NULL, `weatherCondition` TEXT, `temperature` REAL, `userId` TEXT NOT NULL, `batteryStartLevel` INTEGER, `batteryCurrentLevel` INTEGER, `liveShareCode` TEXT, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "startTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pauseTime",
+            "columnName": "pauseTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "endTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "frontCameraUri",
+            "columnName": "frontCameraUri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "backCameraUri",
+            "columnName": "backCameraUri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "currentDistance",
+            "columnName": "currentDistance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentElevation",
+            "columnName": "currentElevation",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentDuration",
+            "columnName": "currentDuration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxSpeed",
+            "columnName": "maxSpeed",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "averageSpeed",
+            "columnName": "averageSpeed",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalAscent",
+            "columnName": "totalAscent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalDescent",
+            "columnName": "totalDescent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caloriesBurned",
+            "columnName": "caloriesBurned",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startLocationName",
+            "columnName": "startLocationName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "currentLocationName",
+            "columnName": "currentLocationName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastLocationTimestamp",
+            "columnName": "lastLocationTimestamp",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "trackedLocationsCount",
+            "columnName": "trackedLocationsCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weatherCondition",
+            "columnName": "weatherCondition",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperature",
+            "columnName": "temperature",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "batteryStartLevel",
+            "columnName": "batteryStartLevel",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "batteryCurrentLevel",
+            "columnName": "batteryCurrentLevel",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "liveShareCode",
+            "columnName": "liveShareCode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '794ecd18ebaa7483672314354d2c23f9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e7f899aa5ff0f62f39bff2abd36d25b4')"
     ]
   }
 }

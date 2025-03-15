@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * ViewModel pour l'écran Live, gérant les données et la logique des randonnées en direct
- */
 @HiltViewModel
 class LiveViewModel @Inject constructor() : ViewModel() {
 
@@ -34,14 +31,10 @@ class LiveViewModel @Inject constructor() : ViewModel() {
 
     init {
         loadNearbyHikers()
-        // Initialisation du compteur de treks à partir des préférences utilisateur ou de la base de données
         loadUserTrekCount()
     }
 
-    /**
-     * Charge les randonneurs à proximité
-     */
-    fun loadNearbyHikers() {
+    private fun loadNearbyHikers() {
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true) }
@@ -49,7 +42,6 @@ class LiveViewModel @Inject constructor() : ViewModel() {
                 // Simuler un appel réseau
                 delay(1000)
 
-                // Dans une app réelle, ceci viendrait d'une API ou d'une base de données
                 val hikers = listOf(
                     Hiker(
                         id = "1",
@@ -126,95 +118,17 @@ class LiveViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    /**
-     * Charge le nombre de treks de l'utilisateur
-     */
     private fun loadUserTrekCount() {
         viewModelScope.launch {
             // Simuler un chargement depuis une base de données ou des préférences
             delay(300)
 
-            // Valeur simulée pour la démonstration
             val trekCount = 8
 
             _uiState.update {
                 it.copy(
                     userTrekCount = trekCount,
                     canStartLive = trekCount >= 10
-                )
-            }
-        }
-    }
-
-    /**
-     * Envoie un "trek" au randonneur sélectionné
-     */
-    fun sendTrek(hikerId: String): Boolean {
-
-        viewModelScope.launch {
-            try {
-                // Simuler l'envoi du message
-                delay(500)
-
-                // Incrémenter le compteur de trek
-                val newTrekCount = _uiState.value.userTrekCount + 1
-
-                _uiState.update {
-                    it.copy(
-                        userTrekCount = newTrekCount,
-                        canStartLive = newTrekCount >= 10
-                    )
-                }
-
-                // Dans une app réelle, sauvegarder le nouveau compteur dans une base de données
-                // et envoyer réellement le message
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(errorMessage = "Erreur lors de l'envoi du trek: ${e.message}")
-                }
-                return@launch
-            }
-        }
-
-        return true
-    }
-
-    /**
-     * Rafraîchit les données des randonneurs à proximité
-     */
-    fun refreshNearbyHikers() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true) }
-            loadNearbyHikers()
-            _uiState.update { it.copy(isRefreshing = false) }
-        }
-    }
-
-    /**
-     * Recherche des randonneurs par nom ou localisation
-     */
-    fun searchHikers(query: String) {
-        viewModelScope.launch {
-            if (query.isBlank()) {
-                loadNearbyHikers()
-                return@launch
-            }
-
-            _uiState.update { it.copy(isLoading = true) }
-
-            // Simuler une recherche
-            delay(500)
-
-            val filteredHikers = _uiState.value.nearbyHikers.filter {
-                it.name.contains(query, ignoreCase = true) ||
-                        it.location.contains(query, ignoreCase = true) ||
-                        it.activity.contains(query, ignoreCase = true)
-            }
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    nearbyHikers = filteredHikers
                 )
             }
         }

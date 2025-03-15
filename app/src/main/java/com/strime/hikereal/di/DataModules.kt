@@ -18,13 +18,18 @@ package com.strime.hikereal.di
 
 import android.content.Context
 import androidx.room.Room
+import com.strime.hikereal.data.local.dao.ActiveHikeDao
 import com.strime.hikereal.data.local.dao.BadgeDao
 import com.strime.hikereal.data.local.dao.HikeDao
 import com.strime.hikereal.data.local.database.HikeRealDatabase
+import com.strime.hikereal.data.repository.ActiveHikeRepositoryImpl
 import com.strime.hikereal.data.repository.BadgeRepositoryImpl
 import com.strime.hikereal.data.repository.HikeRepositoryImpl
+import com.strime.hikereal.data.repository.UserRepositoryImpl
+import com.strime.hikereal.domain.repository.ActiveHikeRepository
 import com.strime.hikereal.domain.repository.BadgeRepository
 import com.strime.hikereal.domain.repository.HikeRepository
+import com.strime.hikereal.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -40,9 +45,18 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindHikeRepository(repository: HikeRepositoryImpl): HikeRepository
+
     @Singleton
     @Binds
     abstract fun bindBadgeRepository(repository: BadgeRepositoryImpl): BadgeRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindUserRepository(repository: UserRepositoryImpl): UserRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindActiveHikeRepository(repository: ActiveHikeRepositoryImpl): ActiveHikeRepository
 }
 
 @Module
@@ -70,4 +84,7 @@ object DatabaseModule {
 
     @Provides
     fun provideBadgeDao(database: HikeRealDatabase): BadgeDao = database.badgeDao()
+
+    @Provides
+    fun provideActiveHikeDao(database: HikeRealDatabase): ActiveHikeDao = database.activeHikeDao()
 }
