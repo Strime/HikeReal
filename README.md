@@ -1,27 +1,28 @@
 # Hiking Tracker App
 
-This modern Android application helps users track and document their hiking experiences using:
+HikeReal is a modern Android application that allows hikers to capture, document, and share their mountain experiences in an authentic way. Unlike other hiking apps that focus solely on metrics, HikeReal emphasizes real moments and experiences during outdoor adventures.
 
-* **Jetpack Compose:** For building a modern, declarative UI to display and interact with hiking data.
-* **Room:** For persisting hiking data and photos in a local database.
-* **CameraX:** For capturing and processing photos during hikes.
-* **Hilt:** For dependency injection.
+## App Description
 
-## Features
+HikeReal consists of three main sections:
 
-* Displays a list of completed hikes all over the world (mocked)
-* Create fake hiking sessions with detailed information
-* Capture and save photos during hiking sessions
-* Review past hikes with associated photos and metrics
-* Supports both light and dark themes
+### 1. Feed
+- View recent hikes from the community
+- Explore hikes from around the world with their associated photos and metrics
+- Discover the unique "DualView" feature that simultaneously captures the landscape (back) and the hiker (front)
+- View detailed information such as elevation gain, distance, duration, and group size
+- Vertical scrolling through hikes one at a time for an immersive experience
 
-## Upcoming Features
+### 2. Live & Activities
+- Follow ongoing hikes from other users in real-time
+- Start your own hike and share it live with the community
+- **Unique Activity Validation**: A hike can only be validated by taking at least one "DualView" photo during the activity
+- The DualView technology captures both what you see and your reaction simultaneously
 
-* Location service during hike startup
-* Adding friends for social features
-* Team creation for "col quest" feature
-* Map visualization with mountain passes owned by teams
-
+### 3. Profile
+- View your hiking history and achievements
+- Display your badges and accomplishments
+- Track your personal statistics (total elevation gain, total distance, etc.)
 
 ## Architecture
 
@@ -38,13 +39,30 @@ The app follows a Model-View-ViewModel (MVVM) architecture:
 * **ViewModel:** For managing UI state.
 * **Room:** For local data persistence.
 * **Hilt:** For dependency injection.
-* **CameraX:** For photo capturing functionality.
+* **CameraX:** For DualView photo capturing functionality.
 * **Navigation Compose:** For navigating between different screens in the app.
 * **Coroutines:** For asynchronous operations.
 * **Flow:** For reactive programming and observing data changes.
 * **Location Services:** For tracking user's position during hikes.
 * **JUnit:** For unit testing.
 * **MockK:** For creating mocks and stubs in unit tests.
+
+## Features
+
+* Vertical display of hikes one by one in the feed
+* DualView functionality to capture landscape and hiker simultaneously
+* Interactive visualization with movable Picture-in-Picture (PIP)
+* Detailed metrics for each hike
+* Support for dark/light mode
+* Group size indicator (solo or number of people)
+* Internationalization (i18n) with multi-language support
+
+## Upcoming Features
+
+* Location service during hike startup
+* Adding friends for social features
+* Team creation for "col quest" feature
+* Map visualization with mountain passes owned by teams
 
 ## Running the App
 
