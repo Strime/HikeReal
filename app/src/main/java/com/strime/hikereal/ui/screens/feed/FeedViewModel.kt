@@ -2,6 +2,7 @@ package com.strime.hikereal.ui.screens.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.strime.hikereal.R
 import com.strime.hikereal.data.mapper.toHikePost
 import com.strime.hikereal.domain.model.HikePost
 import com.strime.hikereal.domain.repository.BadgeRepository
@@ -49,7 +50,7 @@ class FeedViewModel @Inject constructor(
                     _uiState.value = UiState.Success(hikePosts)
                 }
             } catch (e: Exception) {
-                _uiState.value = UiState.Error("Impossible de charger le flux: ${e.message}")
+                _uiState.value = UiState.Error(R.string.error_unknown)
             }
         }
     }

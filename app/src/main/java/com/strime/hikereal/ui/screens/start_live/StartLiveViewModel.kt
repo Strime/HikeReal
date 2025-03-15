@@ -2,6 +2,8 @@ package com.strime.hikereal.ui.screens.start_live
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.strime.hikereal.R
+import com.strime.hikereal.data.repository.HikeException
 import com.strime.hikereal.domain.repository.ActiveHikeRepository
 import com.strime.hikereal.domain.repository.UserRepository
 import com.strime.hikereal.utils.UiState
@@ -30,10 +32,12 @@ class StartLiveViewModel @Inject constructor(
                 val hikeId = activeHikeRepository.startNewHike(userProfile)
 
                 _startHikeState.value = UiState.Success(hikeId)
+            } catch (e: HikeException) {
+                _startHikeState.value = UiState.Error(errorCode = e.errorCode)
             } catch (e: Exception) {
-                // Gérer les erreurs
-                _startHikeState.value = UiState.Error(e.message ?: "")
+                _startHikeState.value = UiState.Error(errorCode = R.string.error_unknown)
             }
+
         }
     }
 

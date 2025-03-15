@@ -15,12 +15,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -35,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.strime.hikereal.R
 import com.strime.hikereal.navigation.AppRoutes
 import com.strime.hikereal.ui.components.ActiveHikeBanner
+import com.strime.hikereal.ui.components.HandleErrorState
 import com.strime.hikereal.ui.screens.feed.FeedScreen
 import com.strime.hikereal.ui.screens.live.LiveScreen
 import com.strime.hikereal.ui.screens.profile.ProfileScreen
@@ -49,6 +53,9 @@ fun MainAppScreen(
 ) {
     val navController = rememberNavController()
     val activeHikeState by sharedViewModel.activeHikeState.collectAsState()
+    val operationState by sharedViewModel.operationState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     var showBottomBar by rememberSaveable { mutableStateOf(true) }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -63,6 +70,7 @@ fun MainAppScreen(
         }
     }
 
+    HandleErrorState(operationState, snackbarHostState)
 
     val items = listOf(
         Screen.Feed,
@@ -71,6 +79,9 @@ fun MainAppScreen(
     )
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         bottomBar = {
             if (showBottomBar) {
                 Column {

@@ -1,5 +1,7 @@
 package com.strime.hikereal.data.repository
 
+import androidx.annotation.StringRes
+import com.strime.hikereal.R
 import com.strime.hikereal.data.local.dao.ActiveHikeDao
 import com.strime.hikereal.data.local.dao.HikeDao
 import com.strime.hikereal.data.local.entity.ActiveHikeEntity
@@ -10,6 +12,21 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+
+sealed class HikeException(@StringRes val errorCode: Int) : Exception() {
+    data object ActiveHikeAlreadyExists : HikeException(R.string.error_active_hike_already_exists) {
+        private fun readResolve(): Any = ActiveHikeAlreadyExists
+    }
+
+    data object NoActiveHike : HikeException(R.string.error_no_active_hike) {
+        private fun readResolve(): Any = NoActiveHike
+    }
+
+    data object ActiveHikeCanBeCompleted : HikeException(R.string.error_active_hike_can_be_completed) {
+        private fun readResolve(): Any = ActiveHikeCanBeCompleted
+    }
+}
+
 
 @Singleton
 class ActiveHikeRepositoryImpl @Inject constructor(
@@ -44,7 +61,7 @@ class ActiveHikeRepositoryImpl @Inject constructor(
 
     override suspend fun startNewHike(userProfile: UserProfile): String {
         if (hasActiveHike()) {
-            throw IllegalStateException("Une activité est déjà en cours. Impossible d'en démarrer une nouvelle.")
+            throw HikeException.ActiveHikeAlreadyExists
         }
 
         val hikeId = UUID.randomUUID().toString()
@@ -66,11 +83,11 @@ class ActiveHikeRepositoryImpl @Inject constructor(
     override suspend fun completeHike(hikeId: String, userProfile: UserProfile): Boolean {
         val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
 
-        if (hike.status != "ACTIVE" && hike.status != "PAUSED") {
-            return false
+        if (hike.status != "ACTIVE") {
+            throw HikeException.NoActiveHike
         }
         if (hike.frontCameraUri == null || hike.backCameraUri == null) {
-            return false;
+            throw HikeException.ActiveHikeCanBeCompleted
         }
 
         val now = System.currentTimeMillis()
@@ -97,12 +114,6 @@ class ActiveHikeRepositoryImpl @Inject constructor(
 
         hikeDao.insertHike(newHike)
 
-        return true
-    }
-
-    override suspend fun cancelHike(hikeId: String): Boolean {
-        val now = System.currentTimeMillis()
-        activeHikeDao.updateHikeStatus(hikeId, "CANCELLED", now, now)
         return true
     }
 

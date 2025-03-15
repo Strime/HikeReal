@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.strime.hikereal.R
 import com.strime.hikereal.ui.components.DebouncedButtons
+import com.strime.hikereal.ui.components.HandleErrorState
 import com.strime.hikereal.ui.theme.Dimens.paddingLarge
 import com.strime.hikereal.ui.theme.Dimens.spacingLarge
 import com.strime.hikereal.ui.theme.Dimens.spacingMedium
@@ -62,22 +63,12 @@ fun StartLiveScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(startHikeState) {
-        when (startHikeState) {
-            is UiState.Success -> {
-                navController.popBackStack()
-            }
-
-            is UiState.Error -> {
-                val errorMsg = (startHikeState as UiState.Error).message
-                snackbarHostState.showSnackbar(
-                    message = errorMsg.ifEmpty { "Une erreur est survenue" }
-                )
-            }
-
-            else -> { /* Ne rien faire pour les autres états */
-            }
+        if (startHikeState is UiState.Success) {
+            navController.popBackStack()
         }
     }
+
+    HandleErrorState(errorState = startHikeState, snackbarHostState = snackbarHostState)
 
     Surface(
         modifier = Modifier.fillMaxSize(),

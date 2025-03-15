@@ -8,7 +8,6 @@ interface ActiveHikeRepository {
     fun getCurrentActiveHike(): Flow<ActiveHikeEntity?>
     suspend fun startNewHike(userProfile: UserProfile): String
     suspend fun completeHike(hikeId: String, userProfile: UserProfile): Boolean
-    suspend fun cancelHike(hikeId: String): Boolean
     suspend fun updateDistance(hikeId: String, distance: Float): Boolean
     suspend fun saveFrontCameraPhoto(hikeId: String, uri: String): Boolean
     suspend fun saveBackCameraPhoto(hikeId: String, uri: String): Boolean

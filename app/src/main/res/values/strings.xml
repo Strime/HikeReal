@@ -129,7 +129,10 @@
     <string name="empty_image_content_description">Empty image</string>
     <string name="error_image_content_description">Error image</string>
 
-    <!-- WIP -->
-    <string name="coming_soon">Coming Soon</string>
-    <string name="profile_construction_message">Your hiking journal is under construction. You\'ll soon be able to record all your adventures here.</string>
+    <!-- Errors -->
+    <string name="error_active_hike_already_exists">A hike is already in progress. Please complete or cancel the current hike before starting a new one.</string>
+    <string name="error_no_active_hike">There is no active hike. You need to start a hike first.</string>
+    <string name="error_active_hike_can_be_completed">This hike is currently active and can be completed. Please take HikeReal before performing this operation.</string>
+    <string name="error_unknown">An unexpected error occurred. Please try again later.</string>
+
 </resources>

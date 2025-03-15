@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.strime.hikereal.R
-import com.strime.hikereal.domain.model.ActiveHikeUiState
+import com.strime.hikereal.domain.model.ActiveHike
 import com.strime.hikereal.domain.model.HikeState
 import com.strime.hikereal.ui.theme.Dimens.iconSizeMedium
 import com.strime.hikereal.ui.theme.Dimens.paddingExtraLarge
@@ -35,7 +35,7 @@ import com.strime.hikereal.ui.theme.Dimens.spacingSmall
 
 @Composable
 fun ActiveHikeBanner(
-    activeHikeState: ActiveHikeUiState,
+    activeHikeState: ActiveHike,
     duration: String,
     distance: String,
     onCompleteClick: () -> Unit,

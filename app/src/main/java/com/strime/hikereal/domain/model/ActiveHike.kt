@@ -1,6 +1,6 @@
 package com.strime.hikereal.domain.model
 
-data class ActiveHikeUiState(
+data class ActiveHike(
     val hikeId: String? = null,
     val hikeState: HikeState = HikeState.ACTIVE,
     val formattedDuration: String = "00:00:00",

@@ -1,6 +1,7 @@
 package com.strime.hikereal.ui.screens.feed
 
 import android.graphics.drawable.BitmapDrawable
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -81,11 +82,11 @@ fun FeedScreen(
             }
 
             is UiState.Success -> {
-                SuccessState(posts = state.data, navController = navController)
+                SuccessState(posts = state.data)
             }
 
             is UiState.Error -> {
-                ErrorState(message = state.message)
+                ErrorState(message = state.errorCode)
             }
 
         }
@@ -103,13 +104,13 @@ fun LoadingState() {
 }
 
 @Composable
-fun ErrorState(message: String) {
+fun ErrorState(@StringRes message: Int) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = message.ifEmpty { stringResource(R.string.feed_error_loading) },
+            text = stringResource(message),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodyLarge
         )
@@ -117,19 +118,19 @@ fun ErrorState(message: String) {
 }
 
 @Composable
-fun SuccessState(posts: List<HikePost>, navController: NavController) {
+fun SuccessState(posts: List<HikePost>) {
     val pagerState = rememberPagerState(pageCount = { posts.size })
 
     VerticalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { page ->
-        SingleTrekPostView(post = posts[page], navController = navController)
+        SingleTrekPostView(post = posts[page])
     }
 }
 
 @Composable
-fun SingleTrekPostView(post: HikePost, navController: NavController) {
+fun SingleTrekPostView(post: HikePost) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
