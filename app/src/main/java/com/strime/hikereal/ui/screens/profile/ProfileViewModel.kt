@@ -10,20 +10,18 @@ import com.strime.hikereal.domain.repository.BadgeRepository
 import com.strime.hikereal.domain.repository.HikeRepository
 import com.strime.hikereal.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    private val hikeRepository: HikeRepository,
-    private val badgeRepository: BadgeRepository
+    userRepository: UserRepository,
+    hikeRepository: HikeRepository,
+    badgeRepository: BadgeRepository
 ) : ViewModel() {
 
     private val _profileState = MutableStateFlow(ProfileUiState())
@@ -49,13 +47,6 @@ class ProfileViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ProfileUiState(isLoading = true)
     )
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            hikeRepository.initializeDatabase(userId)
-            badgeRepository.initializeDatabase(userId)
-        }
-    }
 }
 
 data class ProfileUiState(

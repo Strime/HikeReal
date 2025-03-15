@@ -54,7 +54,7 @@ class HikeRepositoryImpl @Inject constructor(
                     groupSize = 1,
                     timestamp = System.currentTimeMillis() - 72000000,
                     duration = 2490,
-                    frontCameraUri = "https://images.unsplash.com/photo-1476900543704-4312b78632f8",
+                    frontCameraUri = "https://images.unsplash.com/photo-1523287409476-a9e70a25af3f",
                     backCameraUri = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
                 )
             )

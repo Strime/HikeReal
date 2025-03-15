@@ -23,7 +23,7 @@
 
     <!-- Navigation -->
     <string name="menu_back">Back</string>
-    <string name="feed">Adventure</string>
+    <string name="feed">Feed</string>
     <string name="live">Direct</string>
     <string name="profile">Notebook</string>
 
@@ -83,6 +83,8 @@
     <string name="profile_days">days</string>
     <string name="profile_level">Level</string>
     <string name="profile_xp">XP</string>
+    <string name="profile_no_treks_yet">No Treks Yet</string>
+    <string name="profile_feed_empty_message">Looks like your feed is empty. Explore treks from others or start your own adventure!</string>
 
     <!-- Active hike banner -->
     <string name="active_hike_in_progress">Running</string>
@@ -129,6 +131,5 @@
 
     <!-- WIP -->
     <string name="coming_soon">Coming Soon</string>
-    <string name="live_construction_message">Live streams will be available soon. Get ready to share your hikes in real-time!</string>
     <string name="profile_construction_message">Your hiking journal is under construction. You\'ll soon be able to record all your adventures here.</string>
 </resources>

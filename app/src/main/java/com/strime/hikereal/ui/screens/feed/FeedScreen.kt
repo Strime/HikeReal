@@ -1,5 +1,6 @@
 package com.strime.hikereal.ui.screens.feed
 
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,14 +11,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -25,15 +24,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -56,13 +50,15 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.strime.hikereal.R
 import com.strime.hikereal.domain.model.HikePost
 import com.strime.hikereal.ui.theme.Dimens
+import com.strime.hikereal.ui.theme.Dimens.borderRadiusLarge
+import com.strime.hikereal.ui.util.extractDominantColorFromBitmap
+import com.strime.hikereal.ui.util.getAccessibleTextColor
 import com.strime.hikereal.utils.UiState
 import kotlin.math.roundToInt
 
@@ -135,145 +131,100 @@ fun SuccessState(posts: List<HikePost>, navController: NavController) {
 @Composable
 fun SingleTrekPostView(post: HikePost, navController: NavController) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                horizontal = Dimens.paddingLarge,
-                vertical = Dimens.paddingSmall
-            ),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        TrekPostCard(post = post, navController = navController)
+        TrekPostCard(post = post)
     }
 }
 
 @Composable
-fun TrekPostCard(post: HikePost, navController: NavController) {
-    var isLiked by remember { mutableStateOf(post.isLiked) }
+fun TrekPostCard(post: HikePost) {
+    var dominantColor by remember { mutableStateOf(Color.White) }
 
-    Card(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .fillMaxSize()
+            .background(dominantColor)
+            .padding(Dimens.paddingMedium)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(Dimens.paddingMedium),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Dimens.paddingMedium),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(Dimens.profilePictureSize)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary)
-                        .clickable {
-                            navController.navigate("profile/${post.userId}")
-                        }
-                ) {
-                    AsyncImage(
-                        model = post.userProfilePicture,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(Dimens.spacingMedium))
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = post.userName,
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = post.locationName,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        Spacer(modifier = Modifier.width(Dimens.spacingMedium))
-
-                        GroupSizeIndicator(
-                            groupSize = post.groupSize
-                        )
-                    }
-                }
-
-                Text(
-                    text = post.timeAgo,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
+        Column {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                DualViewPhotoDisplay(dualViewImage = post.dualViewImage)
-
-                Surface(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .fillMaxWidth(),
-                    color = Color.Black.copy(alpha = Dimens.overlayOpacity)
-                ) {
-                    MetricsRow(
-                        metrics = post.metrics,
-                        modifier = Modifier.padding(Dimens.paddingSmall)
-                    )
-                }
-            }
-
-            Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (post.caption.isNotEmpty()) {
-                    Text(
-                        text = post.caption,
-                        modifier = Modifier.padding(Dimens.paddingLarge),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-
-                HorizontalDivider(modifier = Modifier.padding(horizontal = Dimens.paddingLarge))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(Dimens.paddingMedium),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Box(
                         modifier = Modifier
-                            .clickable { isLiked = !isLiked }
-                            .padding(Dimens.paddingMedium)
+                            .size(Dimens.profilePictureSize)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .clickable { }
                     ) {
-                        Icon(
-                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        AsyncImage(
+                            model = post.userProfilePicture,
                             contentDescription = null,
-                            tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
-                        Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+                    }
+
+                    Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = post.likeCount.toString(),
-                            style = MaterialTheme.typography.bodyMedium
+                            text = post.userName,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = dominantColor.getAccessibleTextColor()
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = post.locationName,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = dominantColor.getAccessibleTextColor().copy(alpha = 0.8f)
+                            )
+
+                            Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+
+                            GroupSizeIndicator(
+                                groupSize = post.groupSize
+                            )
+                        }
+                    }
+
+                    Text(
+                        text = post.timeAgo,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = dominantColor.getAccessibleTextColor().copy(alpha = 0.7f)
+                    )
+                }
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                DualViewPhotoDisplay(
+                    dualViewImage = post.dualViewImage,
+                    onDominantColorExtracted = { color ->
+                        dominantColor = color
+                    }
+                )
+
+
+                // Metrics en bas de l'image
+                Surface(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth(),
+                    color = Color.Black.copy(alpha = Dimens.overlayOpacity)
+                ) {
+                    Column {
+                        MetricsRow(
+                            metrics = post.metrics,
+                            modifier = Modifier.padding(Dimens.paddingSmall)
                         )
                     }
                 }
@@ -283,7 +234,10 @@ fun TrekPostCard(post: HikePost, navController: NavController) {
 }
 
 @Composable
-fun DualViewPhotoDisplay(dualViewImage: HikePost.DualViewImage) {
+fun DualViewPhotoDisplay(
+    dualViewImage: HikePost.DualViewImage,
+    onDominantColorExtracted: (Color) -> Unit
+) {
     val density = LocalDensity.current
 
     var imageContainerWidth by remember { mutableIntStateOf(0) }
@@ -291,7 +245,8 @@ fun DualViewPhotoDisplay(dualViewImage: HikePost.DualViewImage) {
 
     val pipSize = with(density) { Dimens.pipImageSize.toPx() }
 
-    val initialOffset = Offset(Dimens.paddingMedium.value, Dimens.paddingMedium.value)
+    val initialOffset =
+        Offset(Dimens.paddingExtraLarge.value * 3, Dimens.paddingExtraLarge.value * 3)
     var currentPosition by remember { mutableStateOf(initialOffset) }
 
     val animatedPosition by animateOffsetAsState(
@@ -304,6 +259,7 @@ fun DualViewPhotoDisplay(dualViewImage: HikePost.DualViewImage) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .clip(RoundedCornerShape(borderRadiusLarge))
             .onGloballyPositioned { coordinates ->
                 imageContainerWidth = coordinates.size.width
                 imageContainerHeight = coordinates.size.height
@@ -313,7 +269,14 @@ fun DualViewPhotoDisplay(dualViewImage: HikePost.DualViewImage) {
             model = if (isBackImageAsBackground) dualViewImage.backImageUrl else dualViewImage.frontImageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            onSuccess = { result ->
+                val drawable = result.result.drawable
+                val bitmap = (drawable as? BitmapDrawable)?.bitmap
+                bitmap?.let {
+                    onDominantColorExtracted(it.extractDominantColorFromBitmap())
+                }
+            }
         )
 
         Box(
@@ -370,46 +333,6 @@ fun DualViewPhotoDisplay(dualViewImage: HikePost.DualViewImage) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-        }
-    }
-}
-
-@Composable
-fun RegularPhotoCarousel(imageUrls: List<String>) {
-    val pagerState = rememberPagerState(pageCount = { imageUrls.size })
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            AsyncImage(
-                model = imageUrls[page],
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        if (imageUrls.size > 1) {
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = Dimens.paddingMedium),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(imageUrls.size) { index ->
-                    val color = if (pagerState.currentPage == index)
-                        Color.White else Color.White.copy(alpha = Dimens.indicatorOpacity)
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = Dimens.spacingSmall)
-                            .size(Dimens.photoIndicatorSize)
-                            .clip(CircleShape)
-                            .background(color)
-                    )
-                }
-            }
         }
     }
 }

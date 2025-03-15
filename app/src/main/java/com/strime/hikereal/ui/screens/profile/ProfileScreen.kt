@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.FilterHdr
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Settings
@@ -390,7 +391,7 @@ fun ProfileContent(
             }
         } else {
             item {
-                EmptyHikesPlaceholder()
+                EmptyFeedPlaceholder()
             }
         }
 
@@ -518,24 +519,25 @@ fun EmptyBadgesPlaceholder() {
 }
 
 @Composable
-fun EmptyHikesPlaceholder() {
+fun EmptyFeedPlaceholder() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingLarge),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            imageVector = Icons.Filled.Terrain,
+            imageVector = Icons.Filled.FilterHdr,
             contentDescription = null,
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(72.dp),
             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
         )
 
         Spacer(modifier = Modifier.height(spacingMedium))
 
         Text(
-            text = stringResource(R.string.coming_soon),
+            text = stringResource(R.string.profile_no_treks_yet),
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
@@ -544,7 +546,7 @@ fun EmptyHikesPlaceholder() {
         Spacer(modifier = Modifier.height(spacingMedium))
 
         Text(
-            text = stringResource(R.string.profile_construction_message),
+            text = stringResource(R.string.profile_feed_empty_message),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
