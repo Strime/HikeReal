@@ -37,6 +37,29 @@
     <string name="feed_metric_distance_value">%.1fkm</string>
     <string name="feed_metric_duration">Durée</string>
 
+    <!-- Live screen -->
+    <string name="live_screen_title">Live</string>
+    <string name="live_no_lives_available">No lives currently available</string>
+    <string name="live_start_your_own_live">You can start your own live to share your hike in real-time</string>
+    <string name="live_start_live_now">Start your live</string>
+    <string name="live_new_session">New Live Session</string>
+    <string name="live_ready_to_share">Ready to Share</string>
+    <string name="live_share_your_adventure">Share your hiking adventure with your followers in real-time</string>
+    <string name="live_start_streaming">Start Streaming</string>
+
+    <!-- Profile Screen -->
+    <string name="start_hiking_new_activity">New Hike</string>
+    <string name="start_hiking_ready_to_start">Ready to start your hike?</string>
+    <string name="start_hiking_capture_your_adventure">Capture your adventure and share it with friends</string>
+    <string name="start_hiking_start_activity">Start Hiking</string>
+    <string name="start_hiking_features">Features</string>
+    <string name="start_hiking_stats_tracking">Hiking Stats</string>
+    <string name="start_hiking_stats_description">Distance, duration, elevation and location will be automatically recorded</string>
+    <string name="start_hiking_hikereel_photo">Exclusive HikeReel</string>
+    <string name="start_hiking_hikereel_description">Take a unique front/back photo that will be the main image of your activity</string>
+    <string name="start_hiking_share_title">Share with Friends</string>
+    <string name="start_hiking_share_description">At the end, add more photos and share your experience with friends</string>
+
     <!-- Profile Screen -->
     <string name="profile_view_all_badges">View All</string>
     <string name="profile_badges_section_title">Badges</string>
@@ -61,8 +84,10 @@
     <string name="profile_level">Level</string>
     <string name="profile_xp">XP</string>
 
+
     <!-- Buttons -->
     <string name="retry">Retry</string>
+    <string name="back">Back</string>
 
     <!-- Content Descriptions -->
     <string name="contact_image_content_description">Contact image</string>
