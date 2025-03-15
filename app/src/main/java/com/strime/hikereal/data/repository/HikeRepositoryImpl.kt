@@ -56,24 +56,6 @@ class HikeRepositoryImpl @Inject constructor(
                     duration = 2490,
                     frontCameraUri = "https://images.unsplash.com/photo-1476900543704-4312b78632f8",
                     backCameraUri = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
-                ),
-                HikeEntity(
-                    id = "3",
-                    name = "La Diag",
-                    locationName = "La Réunion",
-                    distance = 12.8f,
-                    elevation = 520,
-                    views = 203,
-                    likes = 28,
-                    date = 1708556400000L,
-                    userId = "678GHI",
-                    userName = "François D.",
-                    userProfilePicture = "https://i.pravatar.cc/150?img=3",
-                    groupSize = 2,
-                    timestamp = System.currentTimeMillis() - 1200000,
-                    duration = 21490,
-                    frontCameraUri = "https://images.unsplash.com/photo-1464278533981-50e3d9aae1e2",
-                    backCameraUri = "https://images.unsplash.com/photo-1458442310124-dde6edb43d10",
                 )
             )
             hikeDao.insertHikes(hikes)

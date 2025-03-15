@@ -52,7 +52,8 @@ class SharedViewModel @Inject constructor(
         _activeHikeState.update { currentState ->
             currentState.copy(
                 hikeId = activeHike.id,
-                formattedDistance = activeHike.currentDistance.toFormattedDistance()
+                formattedDistance = activeHike.currentDistance.toFormattedDistance(),
+                alreadyTookPhoto = activeHike.backCameraUri != null && activeHike.frontCameraUri != null
             )
         }
     }

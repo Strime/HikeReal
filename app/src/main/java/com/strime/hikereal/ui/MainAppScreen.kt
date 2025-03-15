@@ -76,7 +76,7 @@ fun MainAppScreen(
                 Column {
                     if (activeHikeState.hikeId != null) {
                         ActiveHikeBanner(
-                            hikeState = activeHikeState.hikeState,
+                            activeHikeState = activeHikeState,
                             duration = activeHikeState.formattedDuration,
                             distance = activeHikeState.formattedDistance,
                             onCompleteClick = { sharedViewModel.completeHike() },

@@ -160,7 +160,6 @@ fun ProfileHeader(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(110.dp)
         ) {
-            // Level progress ring
             CircularProgressIndicator(
                 progress = { (userProfile?.experiencePoints ?: 0) / 1000f },
                 modifier = Modifier.size(110.dp),
@@ -169,7 +168,6 @@ fun ProfileHeader(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Profile image with border
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -192,7 +190,6 @@ fun ProfileHeader(
                 )
             }
 
-            // Level indicator
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier

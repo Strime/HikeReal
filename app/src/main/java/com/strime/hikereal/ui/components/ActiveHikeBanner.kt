@@ -24,25 +24,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.strime.hikereal.R
+import com.strime.hikereal.domain.model.ActiveHikeUiState
 import com.strime.hikereal.domain.model.HikeState
+import com.strime.hikereal.ui.theme.Dimens.iconSizeMedium
+import com.strime.hikereal.ui.theme.Dimens.paddingExtraLarge
+import com.strime.hikereal.ui.theme.Dimens.paddingMedium
+import com.strime.hikereal.ui.theme.Dimens.spacingMedium
+import com.strime.hikereal.ui.theme.Dimens.spacingSmall
 
 @Composable
 fun ActiveHikeBanner(
-    hikeState: HikeState,
+    activeHikeState: ActiveHikeUiState,
     duration: String,
     distance: String,
     onCompleteClick: () -> Unit,
     onCapturePhotoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = when (hikeState) {
+    val backgroundColor = when (activeHikeState.hikeState) {
         HikeState.ACTIVE -> MaterialTheme.colorScheme.primaryContainer
         else -> MaterialTheme.colorScheme.surfaceVariant
     }
 
-    val contentColor = when (hikeState) {
+    val contentColor = when (activeHikeState.hikeState) {
         HikeState.ACTIVE -> MaterialTheme.colorScheme.onPrimaryContainer
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
@@ -51,18 +56,21 @@ fun ActiveHikeBanner(
         color = backgroundColor,
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onCapturePhotoClick() }
+            .clickable(
+                enabled = !activeHikeState.alreadyTookPhoto,
+                onClick = { onCapturePhotoClick() }
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = paddingExtraLarge, vertical = paddingMedium),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
                 Text(
-                    text = when (hikeState) {
+                    text = when (activeHikeState.hikeState) {
                         HikeState.ACTIVE -> stringResource(R.string.active_hike_in_progress)
                         else -> stringResource(R.string.active_hike)
                     },
@@ -75,24 +83,24 @@ fun ActiveHikeBanner(
                         imageVector = Icons.Default.Timer,
                         contentDescription = null,
                         tint = contentColor,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(iconSizeMedium)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(spacingSmall))
                     Text(
                         text = duration,
                         style = MaterialTheme.typography.bodyMedium,
                         color = contentColor
                     )
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(spacingMedium))
 
                     Icon(
                         imageVector = Icons.Default.Straighten,
                         contentDescription = null,
                         tint = contentColor,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(iconSizeMedium)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(spacingSmall))
                     Text(
                         text = distance,
                         style = MaterialTheme.typography.bodyMedium,
@@ -101,18 +109,23 @@ fun ActiveHikeBanner(
                 }
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                IconButton(onClick = onCapturePhotoClick) {
-                    Icon(
-                        imageVector = Icons.Default.Camera,
-                        contentDescription = stringResource(id = R.string.capture_hikereal),
-                        tint = contentColor
-                    )
+            Row(horizontalArrangement = Arrangement.spacedBy(spacingMedium)) {
+                if (!activeHikeState.alreadyTookPhoto) {
+                    IconButton(onClick = onCapturePhotoClick) {
+                        Icon(
+                            imageVector = Icons.Default.Camera,
+                            contentDescription = stringResource(id = R.string.capture_hikereal),
+                            tint = contentColor
+                        )
+                    }
                 }
 
                 IconButton(
                     onClick = onCompleteClick,
-                    modifier = Modifier.clickable(onClick = onCompleteClick, indication = null, interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() })
+                    modifier = Modifier.clickable(
+                        onClick = onCompleteClick,
+                        indication = null,
+                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() })
                 ) {
                     Icon(
                         imageVector = Icons.Default.Stop,
