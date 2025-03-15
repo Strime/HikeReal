@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.strime.hikereal.data.local.entity.ActiveHikeEntity
 import com.strime.hikereal.domain.model.ActiveHikeUiState
 import com.strime.hikereal.domain.repository.ActiveHikeRepository
+import com.strime.hikereal.domain.repository.UserRepository
+import com.strime.hikereal.ui.util.toFormattedDistance
+import com.strime.hikereal.ui.util.toFormattedDuration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val activeHikeRepository: ActiveHikeRepository
+    private val activeHikeRepository: ActiveHikeRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _activeHikeState = MutableStateFlow(ActiveHikeUiState())
@@ -48,7 +52,7 @@ class SharedViewModel @Inject constructor(
         _activeHikeState.update { currentState ->
             currentState.copy(
                 hikeId = activeHike.id,
-                formattedDistance = formatDistance(activeHike.currentDistance)
+                formattedDistance = activeHike.currentDistance.toFormattedDistance()
             )
         }
     }
@@ -60,7 +64,7 @@ class SharedViewModel @Inject constructor(
                 val totalDurationMs = System.currentTimeMillis() - activeHike.startTime
 
                 _activeHikeState.update { currentState ->
-                    currentState.copy(formattedDuration = formatDuration(totalDurationMs))
+                    currentState.copy(formattedDuration = totalDurationMs.toFormattedDuration())
                 }
 
                 delay(1000)
@@ -68,23 +72,12 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private fun formatDistance(distanceMeters: Float): String {
-        val distanceKm = distanceMeters / 1000
-        return String.format("%.1f km", distanceKm)
-    }
-
-    private fun formatDuration(durationMs: Long): String {
-        val seconds = (durationMs / 1000) % 60
-        val minutes = (durationMs / (1000 * 60)) % 60
-        val hours = (durationMs / (1000 * 60 * 60))
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
 
     fun completeHike() {
         viewModelScope.launch {
+            val userProfile = userRepository.getUserProfile()
             _activeHikeState.value.hikeId?.let { hikeId ->
-                activeHikeRepository.completeHike(hikeId)
+                activeHikeRepository.completeHike(hikeId, userProfile = userProfile)
             }
         }
     }

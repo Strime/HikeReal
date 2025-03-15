@@ -79,7 +79,12 @@ fun MainAppScreen(
                             hikeState = activeHikeState.hikeState,
                             duration = activeHikeState.formattedDuration,
                             distance = activeHikeState.formattedDistance,
-                            onCompleteClick = { sharedViewModel.completeHike() }
+                            onCompleteClick = { sharedViewModel.completeHike() },
+                            onCapturePhotoClick = {
+                                navController.navigate(
+                                    AppRoutes.SNAP
+                                )
+                            }
                         )
                     }
 
@@ -126,23 +131,42 @@ fun MainAppScreen(
                 ProfileScreen(navController)
             }
 
-            composable("snap/{hikeId}") { backStackEntry ->
-                val hikeId = backStackEntry.arguments?.getString("hikeId")
-                SnapScreen(navController/*, hikeId!!*/)
-            }
-
-            // Nouvelle destination avec animation
             composable(
-                route = AppRoutes.START_LIVE,
+                route = AppRoutes.SNAP,
                 enterTransition = {
-                    // Animation d'entrée qui part du centre et s'étend
                     slideIntoContainer(
                         towards = AnimatedContentTransitionScope.SlideDirection.Up,
                         animationSpec = tween(500)
                     ) + fadeIn(animationSpec = tween(500))
                 },
                 exitTransition = {
-                    // Animation de sortie
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                        animationSpec = tween(500)
+                    ) + fadeOut(animationSpec = tween(500))
+                },
+                popEnterTransition = {
+                    EnterTransition.None
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                        animationSpec = tween(500)
+                    ) + fadeOut(animationSpec = tween(300))
+                }
+            ) {
+                SnapScreen(navController)
+            }
+
+            composable(
+                route = AppRoutes.START_LIVE,
+                enterTransition = {
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                        animationSpec = tween(500)
+                    ) + fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
                     slideOutOfContainer(
                         towards = AnimatedContentTransitionScope.SlideDirection.Down,
                         animationSpec = tween(500)
@@ -164,7 +188,11 @@ fun MainAppScreen(
     }
 }
 
-sealed class Screen(val route: String, val resourceId: Int, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
+sealed class Screen(
+    val route: String,
+    val resourceId: Int,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector
+) {
     data object Feed : Screen(AppRoutes.FEED, R.string.feed, Icons.Filled.Hiking)
     data object Live : Screen(AppRoutes.LIVE, R.string.live, Icons.Filled.Stream)
     data object Profile : Screen(AppRoutes.PROFILE, R.string.profile, Icons.Filled.AccountCircle)

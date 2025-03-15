@@ -15,7 +15,8 @@
  */
 package com.strime.hikereal.domain.repository
 
-import com.strime.hikereal.domain.model.Hike
+import com.strime.hikereal.data.local.entity.HikeEntity
+import com.strime.hikereal.domain.model.HikeData
 import com.strime.hikereal.domain.model.UserStats
 import kotlinx.coroutines.flow.Flow
 
@@ -23,7 +24,8 @@ import kotlinx.coroutines.flow.Flow
  * Interface to the data layer.
  */
 interface HikeRepository {
-    fun getRecentHikes(userId: String, limit: Int = 3): Flow<List<Hike>>
+    suspend fun getAllHikes(): Flow<List<HikeEntity>>
+    fun getRecentHikes(userId: String, limit: Int = 3): Flow<List<HikeData>>
     fun getUserStats(userId: String): Flow<UserStats>
     suspend fun initializeDatabase(userId: String)
 }

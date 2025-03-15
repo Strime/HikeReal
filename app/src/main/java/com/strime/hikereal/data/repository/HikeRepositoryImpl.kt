@@ -2,7 +2,7 @@ package com.strime.hikereal.data.repository
 
 import com.strime.hikereal.data.local.dao.HikeDao
 import com.strime.hikereal.data.local.entity.HikeEntity
-import com.strime.hikereal.domain.model.Hike
+import com.strime.hikereal.domain.model.HikeData
 import com.strime.hikereal.domain.model.UserStats
 import com.strime.hikereal.domain.repository.HikeRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,40 +23,68 @@ class HikeRepositoryImpl @Inject constructor(
             val hikes = listOf(
                 HikeEntity(
                     id = "1",
-                    name = "Mont Blanc Circuit",
+                    name = "UT4M",
+                    locationName = "Mont Blanc Circuit",
                     distance = 24.5f,
                     elevation = 1850,
                     views = 328,
                     likes = 45,
                     date = 1709766000000L,
-                    userId = userId
+                    userId = "123ABC",
+                    userName = "Kilian J.",
+                    userProfilePicture = "https://i.pravatar.cc/150?img=1",
+                    groupSize = 3,
+                    timestamp = System.currentTimeMillis() - 7200000,
+                    duration = 6490,
+                    frontCameraUri = "https://images.unsplash.com/photo-1503614472-8c93d56e92ce",
+                    backCameraUri = "https://images.unsplash.com/photo-1465919292275-c60ba49da6ae",
                 ),
                 HikeEntity(
                     id = "2",
-                    name = "Alpine Lake Loop",
+                    name = "UTMB",
+                    locationName = "Grenoble",
                     distance = 16.2f,
                     elevation = 760,
                     views = 156,
                     likes = 32,
                     date = 1709161200000L,
-                    userId = userId
+                    userId = "345DEF",
+                    userName = "Mathieu B.",
+                    userProfilePicture = "https://i.pravatar.cc/150?img=2",
+                    groupSize = 1,
+                    timestamp = System.currentTimeMillis() - 72000000,
+                    duration = 2490,
+                    frontCameraUri = "https://images.unsplash.com/photo-1476900543704-4312b78632f8",
+                    backCameraUri = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
                 ),
                 HikeEntity(
                     id = "3",
-                    name = "Valley Trail",
+                    name = "La Diag",
+                    locationName = "La Réunion",
                     distance = 12.8f,
                     elevation = 520,
                     views = 203,
                     likes = 28,
                     date = 1708556400000L,
-                    userId = userId
+                    userId = "678GHI",
+                    userName = "François D.",
+                    userProfilePicture = "https://i.pravatar.cc/150?img=3",
+                    groupSize = 2,
+                    timestamp = System.currentTimeMillis() - 1200000,
+                    duration = 21490,
+                    frontCameraUri = "https://images.unsplash.com/photo-1464278533981-50e3d9aae1e2",
+                    backCameraUri = "https://images.unsplash.com/photo-1458442310124-dde6edb43d10",
                 )
             )
             hikeDao.insertHikes(hikes)
         }
     }
 
-    override fun getRecentHikes(userId: String, limit: Int): Flow<List<Hike>> {
+    override suspend fun getAllHikes(): Flow<List<HikeEntity>> {
+        return hikeDao.getAllHikes()
+    }
+
+    override fun getRecentHikes(userId: String, limit: Int): Flow<List<HikeData>> {
         return hikeDao.getRecentHikes(userId, limit).map { entities ->
             entities.map { it.toHike() }
         }
@@ -79,9 +107,9 @@ class HikeRepositoryImpl @Inject constructor(
             }
     }
 
-    private fun HikeEntity.toHike(): Hike {
+    private fun HikeEntity.toHike(): HikeData {
         val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-        return Hike(
+        return HikeData(
             id = id,
             name = name,
             distance = distance,

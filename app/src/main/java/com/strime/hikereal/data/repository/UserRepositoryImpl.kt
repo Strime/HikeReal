@@ -19,6 +19,7 @@ class UserRepositoryImpl @Inject constructor(
             username = "Jon Doe",
             level = 4,
             experiencePoints = 650,
+            profilePicture = "https://i.pravatar.cc/150?img=4",
             bio = "Blabla"
         );
     }

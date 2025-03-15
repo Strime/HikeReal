@@ -1,7 +1,10 @@
 package com.strime.hikereal.data.repository
 
 import com.strime.hikereal.data.local.dao.ActiveHikeDao
+import com.strime.hikereal.data.local.dao.HikeDao
 import com.strime.hikereal.data.local.entity.ActiveHikeEntity
+import com.strime.hikereal.data.local.entity.HikeEntity
+import com.strime.hikereal.domain.model.UserProfile
 import com.strime.hikereal.domain.repository.ActiveHikeRepository
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -10,8 +13,9 @@ import javax.inject.Singleton
 
 @Singleton
 class ActiveHikeRepositoryImpl @Inject constructor(
-    private val activeHikeDao: ActiveHikeDao
-): ActiveHikeRepository {
+    private val activeHikeDao: ActiveHikeDao,
+    private val hikeDao: HikeDao,
+) : ActiveHikeRepository {
 
     override fun getCurrentActiveHike(): Flow<ActiveHikeEntity?> {
         return activeHikeDao.getCurrentActiveHikeAsFlow()
@@ -21,7 +25,24 @@ class ActiveHikeRepositoryImpl @Inject constructor(
         return activeHikeDao.hasActiveHike() > 0
     }
 
-    override suspend fun startNewHike(userId: String): String {
+    override suspend fun getCurrentActiveHikeId(): String? {
+        return activeHikeDao.getCurrentActiveHike()?.id
+    }
+
+    override suspend fun saveSelectedFrontCameraPhoto(hikeId: String, uri: String): Boolean {
+        val now = System.currentTimeMillis()
+        activeHikeDao.updateFrontCameraUri(hikeId, uri, now)
+        return true
+    }
+
+    override suspend fun saveSelectedBackCameraPhoto(hikeId: String, uri: String): Boolean {
+        val now = System.currentTimeMillis()
+        activeHikeDao.updateBackCameraUri(hikeId, uri, now)
+        return true
+    }
+
+
+    override suspend fun startNewHike(userProfile: UserProfile): String {
         if (hasActiveHike()) {
             throw IllegalStateException("Une activité est déjà en cours. Impossible d'en démarrer une nouvelle.")
         }
@@ -33,7 +54,7 @@ class ActiveHikeRepositoryImpl @Inject constructor(
             id = hikeId,
             startTime = now,
             status = "ACTIVE",
-            userId = userId,
+            userId = userProfile.userId,
             createdAt = now,
             updatedAt = now
         )
@@ -42,15 +63,39 @@ class ActiveHikeRepositoryImpl @Inject constructor(
         return hikeId
     }
 
-    override suspend fun completeHike(hikeId: String): Boolean {
+    override suspend fun completeHike(hikeId: String, userProfile: UserProfile): Boolean {
         val hike = activeHikeDao.getActiveHikeById(hikeId) ?: return false
 
         if (hike.status != "ACTIVE" && hike.status != "PAUSED") {
             return false
         }
+        if (hike.frontCameraUri == null || hike.backCameraUri == null) {
+            return false;
+        }
 
         val now = System.currentTimeMillis()
         activeHikeDao.updateHikeStatus(hikeId, "COMPLETED", now, now)
+
+        val newHike = HikeEntity(
+            id = hike.id,
+            name = generateHikeName(hike),
+            locationName = generateHikeName(hike),
+            distance = hike.currentDistance,
+            elevation = hike.currentElevation,
+            duration = hike.currentDuration,
+            date = hike.startTime,
+            userId = hike.userId,
+            userName = userProfile.username,
+            userProfilePicture = userProfile.profilePicture,
+            frontCameraUri = hike.frontCameraUri,
+            backCameraUri = hike.backCameraUri,
+            timestamp = now,
+            groupSize = 1,
+            likes = 0,
+            views = 0,
+        )
+
+        hikeDao.insertHike(newHike)
 
         return true
     }
@@ -107,4 +152,14 @@ class ActiveHikeRepositoryImpl @Inject constructor(
         activeHikeDao.updateActiveHike(updatedHike)
         return true
     }
+
+    private fun generateHikeName(hike: ActiveHikeEntity): String {
+        val date = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            .format(java.util.Date(hike.startTime))
+
+        return hike.startLocationName?.let { location ->
+            "Randonnée à $location - $date"
+        } ?: "Randonnée du $date"
+    }
+
 }

@@ -25,9 +25,9 @@ class StartLiveViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val userId = userRepository.getUserId()
+                val userProfile = userRepository.getUserProfile()
 
-                val hikeId = activeHikeRepository.startNewHike(userId)
+                val hikeId = activeHikeRepository.startNewHike(userProfile)
 
                 _startHikeState.value = UiState.Success(hikeId)
             } catch (e: Exception) {

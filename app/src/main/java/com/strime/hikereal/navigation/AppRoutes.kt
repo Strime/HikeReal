@@ -6,4 +6,5 @@ object AppRoutes {
     const val PROFILE = "profile"
 
     const val START_LIVE = "start_live"
+    const val SNAP = "snap"
 }

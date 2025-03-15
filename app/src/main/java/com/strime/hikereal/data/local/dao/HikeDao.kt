@@ -13,8 +13,14 @@ interface HikeDao {
     @Query("SELECT COUNT(id) FROM hikes")
     suspend fun getHikeCount(): Int
 
+    @Query("SELECT * FROM hikes")
+    fun getAllHikes(): Flow<List<HikeEntity>>
+
     @Query("SELECT * FROM hikes WHERE userId = :userId ORDER BY date DESC LIMIT :limit")
     fun getRecentHikes(userId: String, limit: Int): Flow<List<HikeEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHike(hike: HikeEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHikes(hikes: List<HikeEntity>)

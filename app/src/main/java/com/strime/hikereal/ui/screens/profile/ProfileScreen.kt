@@ -66,7 +66,7 @@ import com.strime.hikereal.R
 import com.strime.hikereal.domain.model.Badge
 import com.strime.hikereal.domain.model.BadgeLevel
 import com.strime.hikereal.domain.model.BadgeType
-import com.strime.hikereal.domain.model.Hike
+import com.strime.hikereal.domain.model.HikeData
 import com.strime.hikereal.domain.model.UserProfile
 import com.strime.hikereal.domain.model.UserStats
 import com.strime.hikereal.ui.theme.Dimens
@@ -383,10 +383,10 @@ fun ProfileContent(
             }
         }
 
-        if (uiState.recentHikes.isNotEmpty()) {
-            items(uiState.recentHikes) { hike ->
+        if (uiState.recentHikeData.isNotEmpty()) {
+            items(uiState.recentHikeData) { hike ->
                 HikeItem(
-                    hike = hike,
+                    hikeData = hike,
                     onClick = { onHikeClick(hike.id) }
                 )
                 Spacer(modifier = Modifier.height(spacingMedium))
@@ -556,7 +556,7 @@ fun EmptyHikesPlaceholder() {
 }
 
 @Composable
-fun HikeItem(hike: Hike, onClick: () -> Unit) {
+fun HikeItem(hikeData: HikeData, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -569,14 +569,14 @@ fun HikeItem(hike: Hike, onClick: () -> Unit) {
             modifier = Modifier.padding(Dimens.paddingExtraLarge)
         ) {
             Text(
-                text = hike.name,
+                text = hikeData.name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
-                text = hike.formattedDate,
+                text = hikeData.formattedDate,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -597,7 +597,7 @@ fun HikeItem(hike: Hike, onClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${hike.distance} km",
+                        text = "${hikeData.distance} km",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -612,7 +612,7 @@ fun HikeItem(hike: Hike, onClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${hike.elevation} m",
+                        text = "${hikeData.elevation} m",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -627,7 +627,7 @@ fun HikeItem(hike: Hike, onClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${hike.views}",
+                        text = "${hikeData.views}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -642,7 +642,7 @@ fun HikeItem(hike: Hike, onClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${hike.likes}",
+                        text = "${hikeData.likes}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

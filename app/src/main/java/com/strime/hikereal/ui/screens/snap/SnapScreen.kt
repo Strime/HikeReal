@@ -11,39 +11,57 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Landscape
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import coil.compose.AsyncImage
+import com.strime.hikereal.R
 
 @Composable
 fun SnapScreen(
@@ -54,7 +72,6 @@ fun SnapScreen(
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
-    // Demande de permission pour la caméra
     var hasCameraPermission by remember { mutableStateOf(false) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -62,13 +79,6 @@ fun SnapScreen(
             hasCameraPermission = granted
         }
     )
-
-    // Lancer la demande de permission au démarrage
-    LaunchedEffect(Unit) {
-        permissionLauncher.launch(Manifest.permission.CAMERA)
-    }
-
-    // Configuration de CameraX
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     var imageCapture: ImageCapture? by remember { mutableStateOf(null) }
     val cameraSelector by remember(uiState.cameraFacingFront) {
@@ -81,49 +91,98 @@ fun SnapScreen(
         )
     }
 
+
+    LaunchedEffect(Unit) {
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+
+    LaunchedEffect(uiState.shouldTakePhoto) {
+        if (uiState.shouldTakePhoto && imageCapture != null) {
+            val photoFile = viewModel.createPhotoFile(context.cacheDir, context.externalCacheDir)
+            val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+            imageCapture?.takePicture(
+                outputOptions,
+                ContextCompat.getMainExecutor(context),
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        val savedUri = Uri.fromFile(photoFile)
+                        Log.d("SnapScreen", "Photo saved: $savedUri")
+                        viewModel.onPhotoTaken(
+                            savedUri.toString(),
+                            uiState.cameraFacingFront
+                        )
+                    }
+
+                    override fun onError(exception: ImageCaptureException) {
+                        Log.e(
+                            "CameraX",
+                            "Photo capture failed: ${exception.message}",
+                            exception
+                        )
+                        viewModel.onCaptureError("Failed to capture photo: ${exception.message}")
+                    }
+                }
+            )
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         if (hasCameraPermission) {
-            // Affichage de la prévisualisation caméra réelle
+            val previewView = remember { PreviewView(context) }
+
+            LaunchedEffect(uiState.cameraFacingFront) {
+                val cameraProvider = cameraProviderFuture.get()
+
+                val preview = Preview.Builder().build().also {
+                    it.surfaceProvider = previewView.surfaceProvider
+                }
+
+                imageCapture = ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .build()
+
+                try {
+                    cameraProvider.unbindAll()
+
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageCapture
+                    )
+                } catch (e: Exception) {
+                    Log.e("CameraX", "Binding failed", e)
+                }
+            }
+
             AndroidView(
-                factory = { ctx ->
-                    val previewView = PreviewView(ctx)
-                    val executor = ContextCompat.getMainExecutor(ctx)
-
-                    cameraProviderFuture.addListener({
-                        val cameraProvider = cameraProviderFuture.get()
-
-                        // Configuration de la prévisualisation
-                        val preview = Preview.Builder().build().also {
-                            it.setSurfaceProvider(previewView.surfaceProvider)
-                        }
-
-                        // Configuration de la capture d'image
-                        imageCapture = ImageCapture.Builder()
-                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                            .build()
-
-                        try {
-                            // Unbind des cas d'utilisation avant de rebind
-                            cameraProvider.unbindAll()
-
-                            // Bind des cas d'utilisation à la caméra
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview,
-                                imageCapture
-                            )
-                        } catch (e: Exception) {
-                            Log.e("CameraX", "Binding failed", e)
-                        }
-                    }, executor)
-
-                    previewView
-                },
+                factory = { previewView },
                 modifier = Modifier.fillMaxSize()
             )
+
+            // Affichage du compteur de photos
+            if (!uiState.isCaptureComplete) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 16.dp)
+                        .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = if (uiState.cameraFacingFront) {
+                            "Selfie: Photo ${uiState.photosTakenCount + 1}/${SnapViewModel.PHOTOS_PER_CAMERA}"
+                        } else {
+                            "Vue: Photo ${uiState.photosTakenCount + 1}/${SnapViewModel.PHOTOS_PER_CAMERA}"
+                        },
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         } else {
-            // Afficher message de demande de permission
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -135,7 +194,7 @@ fun SnapScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Camera permission required",
+                        text = stringResource(R.string.snap_camera_permission_required),
                         color = Color.White,
                         style = MaterialTheme.typography.headlineSmall
                     )
@@ -143,13 +202,12 @@ fun SnapScreen(
                     Button(
                         onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }
                     ) {
-                        Text("Grant Permission")
+                        Text(stringResource(R.string.snap_grant_permission))
                     }
                 }
             }
         }
 
-        // Afficher l'indicateur de chargement pendant la capture
         if (uiState.isCapturing) {
             Box(
                 modifier = Modifier
@@ -167,7 +225,7 @@ fun SnapScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Capturing photos...",
+                        text = stringResource(R.string.snap_capturing_photos),
                         color = Color.White,
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -175,49 +233,6 @@ fun SnapScreen(
             }
         }
 
-        // Afficher le challenge en haut de l'écran
-        if (!uiState.challengePrompt.isNullOrEmpty() && !uiState.isCapturing && !uiState.isCaptureComplete) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 48.dp)
-                    .align(Alignment.TopCenter)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Black.copy(alpha = 0.7f)
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Today's Challenge",
-                            color = Color.White,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Text(
-                            text = uiState.challengePrompt,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Time remaining: ${uiState.remainingTime}",
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                }
-            }
-        }
-
-        // Contrôles de la caméra
         if (!uiState.isCapturing && !uiState.isCaptureComplete) {
             Box(
                 modifier = Modifier
@@ -230,67 +245,9 @@ fun SnapScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Toggle flash
-                    IconButton(
-                        onClick = { viewModel.toggleFlash() },
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(Color.Black.copy(alpha = 0.5f))
-                    ) {
-                        Icon(
-                            imageVector = if (uiState.flashEnabled) Icons.Default.FlashOn else Icons.Default.FlashOff,
-                            contentDescription = "Flash",
-                            tint = Color.White
-                        )
-                    }
-
-                    // Capture button
                     IconButton(
                         onClick = {
-                            // Démarrer la capture de la séquence
                             viewModel.startPhotoCapture()
-
-                            // Dans une vraie implémentation, nous utiliserions CameraX pour capturer
-                            // les photos depuis les deux caméras. Voici la logique de comment cela
-                            // pourrait être fait (commentée car nécessite des permissions et des
-                            // configurations supplémentaires).
-
-                            /*
-                            val imgCapture = imageCapture ?: return@IconButton
-
-                            // Créer un répertoire pour stocker les photos
-                            val outputDir = File(context.externalCacheDir ?: context.cacheDir, "photos")
-                            if (!outputDir.exists()) outputDir.mkdirs()
-
-                            // Fonction auxiliaire pour la capture
-                            fun takePhoto(isFront: Boolean) {
-                                val photoFile = File(
-                                    outputDir,
-                                    "${if (isFront) "front" else "back"}_${System.currentTimeMillis()}.jpg"
-                                )
-
-                                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-                                imgCapture.takePicture(
-                                    outputOptions,
-                                    ContextCompat.getMainExecutor(context),
-                                    object : ImageCapture.OnImageSavedCallback {
-                                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                            val savedUri = Uri.fromFile(photoFile)
-                                            viewModel.onPhotoTaken(savedUri.toString(), isFront)
-                                        }
-
-                                        override fun onError(exception: ImageCaptureException) {
-                                            Log.e("CameraX", "Photo capture failed: ${exception.message}", exception)
-                                        }
-                                    }
-                                )
-                            }
-
-                            // Logique de capture en séquence
-                            // Serait mise en œuvre avec des coroutines et des délais entre les captures
-                            */
                         },
                         modifier = Modifier
                             .size(72.dp)
@@ -299,45 +256,26 @@ fun SnapScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Camera,
-                            contentDescription = "Take Photo",
+                            contentDescription = stringResource(R.string.snap_take_photo),
                             tint = Color.Black,
                             modifier = Modifier.size(36.dp)
-                        )
-                    }
-
-                    // Flip camera (pendant la prévisualisation seulement)
-                    IconButton(
-                        onClick = { viewModel.toggleCamera() },
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(Color.Black.copy(alpha = 0.5f))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FlipCameraAndroid,
-                            contentDescription = "Flip Camera",
-                            tint = Color.White
                         )
                     }
                 }
             }
         }
 
-        // Afficher écran de sélection des photos quand capture terminée
         if (uiState.isCaptureComplete) {
             PhotoSelectionScreen(
                 frontPhotos = uiState.frontCapturedPhotos,
                 backPhotos = uiState.backCapturedPhotos,
                 selectedFrontIndex = uiState.selectedFrontPhotoIndex,
                 selectedBackIndex = uiState.selectedBackPhotoIndex,
-                captionText = uiState.captionText,
-                hikingMetrics = uiState.hikingMetrics,
                 onFrontPhotoSelected = { viewModel.selectFrontPhoto(it) },
                 onBackPhotoSelected = { viewModel.selectBackPhoto(it) },
-                onCaptionChange = { viewModel.updateCaption(it) },
-                onDiscard = { viewModel.discardPhoto() },
+                onDiscard = { viewModel.discardPhotos() },
                 onSave = {
-                    viewModel.savePhoto()
+                    viewModel.savePhotos()
                     navController.popBackStack()
                 }
             )
@@ -351,11 +289,8 @@ fun PhotoSelectionScreen(
     backPhotos: List<String>,
     selectedFrontIndex: Int,
     selectedBackIndex: Int,
-    captionText: String,
-    hikingMetrics: SnapViewModel.HikingMetrics?,
     onFrontPhotoSelected: (Int) -> Unit,
     onBackPhotoSelected: (Int) -> Unit,
-    onCaptionChange: (String) -> Unit,
     onDiscard: () -> Unit,
     onSave: () -> Unit
 ) {
@@ -370,17 +305,15 @@ fun PhotoSelectionScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Titre
             Text(
-                text = "Choose Your HikeReal Moment",
+                text = stringResource(R.string.snap_choose_hikereal_moment),
                 style = MaterialTheme.typography.headlineSmall,
                 color = Color.White,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            // Photos frontales
             Text(
-                text = "Selfie Photos",
+                text = stringResource(R.string.snap_you),
                 style = MaterialTheme.typography.titleMedium,
                 color = Color.White,
                 modifier = Modifier
@@ -395,10 +328,7 @@ fun PhotoSelectionScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(frontPhotos) { index, photo ->
-                    // Dans une application réelle, utiliser Coil pour charger l'image
-                    Image(
-                        painter = painterResource(id = android.R.drawable.ic_menu_camera), // Placeholder
-                        contentDescription = "Front photo $index",
+                    Box(
                         modifier = Modifier
                             .size(100.dp)
                             .clip(RoundedCornerShape(8.dp))
@@ -407,17 +337,37 @@ fun PhotoSelectionScreen(
                                 color = if (index == selectedFrontIndex) MaterialTheme.colorScheme.primary else Color.Transparent,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable { onFrontPhotoSelected(index) },
-                        contentScale = ContentScale.Crop
-                    )
+                            .clickable { onFrontPhotoSelected(index) }
+                    ) {
+                        if (photo.isNotEmpty()) {
+                            AsyncImage(
+                                model = photo,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.DarkGray),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = Color.LightGray
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Photos arrière
             Text(
-                text = "View Photos",
+                text = stringResource(R.string.snap_view),
                 style = MaterialTheme.typography.titleMedium,
                 color = Color.White,
                 modifier = Modifier
@@ -432,10 +382,7 @@ fun PhotoSelectionScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(backPhotos) { index, photo ->
-                    // Dans une application réelle, utiliser Coil pour charger l'image
-                    Image(
-                        painter = painterResource(id = android.R.drawable.ic_menu_report_image), // Placeholder
-                        contentDescription = "Back photo $index",
+                    Box(
                         modifier = Modifier
                             .size(100.dp)
                             .clip(RoundedCornerShape(8.dp))
@@ -444,84 +391,35 @@ fun PhotoSelectionScreen(
                                 color = if (index == selectedBackIndex) MaterialTheme.colorScheme.primary else Color.Transparent,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable { onBackPhotoSelected(index) },
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Hiking metrics
-            if (hikingMetrics != null) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.DarkGray
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                            .clickable { onBackPhotoSelected(index) }
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "${hikingMetrics.elevation}m",
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
+                        if (photo.isNotEmpty()) {
+                            AsyncImage(
+                                model = photo,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
                             )
-                            Text(
-                                text = "Elevation",
-                                fontSize = 12.sp,
-                                color = Color.LightGray
-                            )
-                        }
-
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "${hikingMetrics.distance}km",
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Distance",
-                                fontSize = 12.sp,
-                                color = Color.LightGray
-                            )
-                        }
-
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = hikingMetrics.duration,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Duration",
-                                fontSize = 12.sp,
-                                color = Color.LightGray
-                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.DarkGray),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Landscape,
+                                    contentDescription = null,
+                                    tint = Color.LightGray
+                                )
+                            }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Caption input
-            OutlinedTextField(
-                value = captionText,
-                onValueChange = onCaptionChange,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Add a caption...") },
-                maxLines = 3,
-            )
-
             Spacer(modifier = Modifier.weight(1f))
 
-            // Buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -535,7 +433,7 @@ fun PhotoSelectionScreen(
                         containerColor = Color.DarkGray
                     )
                 ) {
-                    Text("Discard")
+                    Text(stringResource(R.string.snap_discard))
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -545,9 +443,10 @@ fun PhotoSelectionScreen(
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
-                    )
+                    ),
+                    enabled = selectedFrontIndex >= 0 && selectedBackIndex >= 0
                 ) {
-                    Text("Share HikeReal")
+                    Text(stringResource(R.string.save))
                 }
             }
         }

@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
-import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -62,7 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.strime.hikereal.R
-import com.strime.hikereal.domain.model.TrekPost
+import com.strime.hikereal.domain.model.HikePost
 import com.strime.hikereal.ui.theme.Dimens
 import com.strime.hikereal.utils.UiState
 import kotlin.math.roundToInt
@@ -122,7 +121,7 @@ fun ErrorState(message: String) {
 }
 
 @Composable
-fun SuccessState(posts: List<TrekPost>, navController: NavController) {
+fun SuccessState(posts: List<HikePost>, navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { posts.size })
 
     VerticalPager(
@@ -134,7 +133,7 @@ fun SuccessState(posts: List<TrekPost>, navController: NavController) {
 }
 
 @Composable
-fun SingleTrekPostView(post: TrekPost, navController: NavController) {
+fun SingleTrekPostView(post: HikePost, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -149,7 +148,7 @@ fun SingleTrekPostView(post: TrekPost, navController: NavController) {
 }
 
 @Composable
-fun TrekPostCard(post: TrekPost, navController: NavController) {
+fun TrekPostCard(post: HikePost, navController: NavController) {
     var isLiked by remember { mutableStateOf(post.isLiked) }
 
     Card(
@@ -226,11 +225,7 @@ fun TrekPostCard(post: TrekPost, navController: NavController) {
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                if (post.dualViewImage != null) {
-                    DualViewPhotoDisplay(dualViewImage = post.dualViewImage)
-                } else {
-                    RegularPhotoCarousel(imageUrls = post.imageUrls)
-                }
+                DualViewPhotoDisplay(dualViewImage = post.dualViewImage)
 
                 Surface(
                     modifier = Modifier
@@ -281,23 +276,6 @@ fun TrekPostCard(post: TrekPost, navController: NavController) {
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .clickable { navController.navigate("post_detail/${post.id}") }
-                            .padding(Dimens.paddingMedium)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.Message,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(Dimens.spacingSmall))
-                        Text(
-                            text = post.commentCount.toString(),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
                 }
             }
         }
@@ -305,7 +283,7 @@ fun TrekPostCard(post: TrekPost, navController: NavController) {
 }
 
 @Composable
-fun DualViewPhotoDisplay(dualViewImage: TrekPost.DualViewImage) {
+fun DualViewPhotoDisplay(dualViewImage: HikePost.DualViewImage) {
     val density = LocalDensity.current
 
     var imageContainerWidth by remember { mutableIntStateOf(0) }
@@ -471,7 +449,7 @@ fun GroupSizeIndicator(groupSize: Int) {
 
 @Composable
 fun MetricsRow(
-    metrics: TrekPost.Metrics,
+    metrics: HikePost.Metrics,
     modifier: Modifier = Modifier
 ) {
     Row(

@@ -1,6 +1,6 @@
 package com.strime.hikereal.domain.model
 
-data class Hike(
+data class HikeData(
     val id: String,
     val name: String,
     val distance: Float,

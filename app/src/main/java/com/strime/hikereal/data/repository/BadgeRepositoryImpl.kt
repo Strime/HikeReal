@@ -2,7 +2,7 @@ package com.strime.hikereal.data.repository
 
 import com.strime.hikereal.data.local.dao.BadgeDao
 import com.strime.hikereal.data.local.entity.BadgeEntity
-import com.strime.hikereal.data.local.entity.toModel
+import com.strime.hikereal.data.mapper.toModel
 import com.strime.hikereal.domain.model.Badge
 import com.strime.hikereal.domain.repository.BadgeRepository
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ class BadgeRepositoryImpl @Inject constructor(
     override suspend fun initializeDatabase(userId: String) {
         val count = badgeDao.getBadgeCount();
 
-        if(count == 0) {
+        if (count == 0) {
             val currentTime = System.currentTimeMillis()
             val dayInMillis = 24 * 60 * 60 * 1000L
 
@@ -70,6 +70,7 @@ class BadgeRepositoryImpl @Inject constructor(
             badgeDao.insertBadges(badges)
         }
     }
+
     override fun getRecentBadges(userId: String, limit: Int): Flow<List<Badge>> {
         return badgeDao.getRecentBadges(userId, limit).map { entities ->
             entities.map { it.toModel() }
