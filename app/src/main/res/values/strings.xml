@@ -134,5 +134,6 @@
     <string name="error_no_active_hike">There is no active hike. You need to start a hike first.</string>
     <string name="error_active_hike_can_be_completed">This hike is currently active and can be completed. Please take HikeReal before performing this operation.</string>
     <string name="error_unknown">An unexpected error occurred. Please try again later.</string>
+    <string name="image_load_error">Can\'t load image.</string>
 
 </resources>

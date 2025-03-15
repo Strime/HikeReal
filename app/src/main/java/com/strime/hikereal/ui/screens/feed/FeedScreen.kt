@@ -53,9 +53,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.strime.hikereal.R
 import com.strime.hikereal.domain.model.HikePost
+import com.strime.hikereal.ui.components.EnhancedAsyncImage
 import com.strime.hikereal.ui.theme.Dimens
 import com.strime.hikereal.ui.theme.Dimens.borderRadiusLarge
 import com.strime.hikereal.ui.util.extractDominantColorFromBitmap
@@ -166,7 +166,7 @@ fun TrekPostCard(post: HikePost) {
                             .background(MaterialTheme.colorScheme.primary)
                             .clickable { }
                     ) {
-                        AsyncImage(
+                        EnhancedAsyncImage(
                             model = post.userProfilePicture,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
@@ -266,9 +266,8 @@ fun DualViewPhotoDisplay(
                 imageContainerHeight = coordinates.size.height
             }
     ) {
-        AsyncImage(
-            model = if (isBackImageAsBackground) dualViewImage.backImageUrl else dualViewImage.frontImageUrl,
-            contentDescription = null,
+        EnhancedAsyncImage(
+            model = if (isBackImageAsBackground) dualViewImage.backImageUrl else dualViewImage.frontImageUrl,            contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
             onSuccess = { result ->
@@ -328,7 +327,7 @@ fun DualViewPhotoDisplay(
                     currentPosition = Offset(constrainedX, constrainedY)
                 }
         ) {
-            AsyncImage(
+            EnhancedAsyncImage(
                 model = if (isBackImageAsBackground) dualViewImage.frontImageUrl else dualViewImage.backImageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
