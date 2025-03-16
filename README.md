@@ -99,6 +99,7 @@ The business model and monetization strategy for HikeReal is available in the fo
 ## Screenshots
 
 Located in the `screenshots` directory.
+
 [<img src="screenshots/feed.png" width="200"/>](screenshots/feed.png)
 [<img src="screenshots/new_hike.png" width="200"/>](screenshots/new_hike.png)
 [<img src="screenshots/profile.png" width="200"/>](screenshots/profile.png)
